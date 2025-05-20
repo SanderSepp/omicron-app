@@ -10,6 +10,15 @@ export const createMarkerIcon = (isSelected: boolean) => {
   });
 };
 
+export const createNeedHelpUserMarkerIcon = (isSelected: boolean) => {
+  return L.divIcon({
+    className: 'custom-marker',
+    html: `<div class="w-4 h-4 rounded-full ${isSelected ? 'bg-green-500' : 'bg-yellow-400'} border-2 border-white"></div>`,
+    iconSize: [16, 16],
+    iconAnchor: [8, 8]
+  });
+};
+
 export const userMarkerIcon = L.divIcon({
   className: 'user-marker',
   html: `<div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>`,
