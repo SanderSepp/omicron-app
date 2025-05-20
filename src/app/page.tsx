@@ -26,6 +26,9 @@ const selectablePoints: MapPoint[] = [
   }
 ];
 
+const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
+const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
+
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
@@ -52,8 +55,8 @@ export default function MapPage() {
         (position) => {
           setUserLocation({
             id: "userLocation", // Dummy ID, replace with actual logic
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude
+            latitude: mockuserloclat ? Number(mockuserloclat) : position.coords.latitude,
+            longitude: mockuserloclon ? Number(mockuserloclon) : position.coords.longitude
           });
         },
         (error) => {
@@ -236,6 +239,7 @@ export default function MapPage() {
       <div className="md:block md:w-1/3 lg:w-2/4 p-4">
         <div className="relative h-full rounded-lg overflow-hidden">
           <CrisisMap
+            event={event}
             points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
