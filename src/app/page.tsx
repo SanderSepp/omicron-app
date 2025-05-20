@@ -149,8 +149,6 @@ export default function MapPage() {
     }
   };
 
-  if (loading) return <div style={{ display: 'flex', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center' }}><p>Loading...</p></div>
-
   const [profiles, setProfiles] = useState<any[]>(() => {
     try {
       return JSON.parse(localStorage.getItem("selectedProfile") || "[]");
@@ -188,6 +186,12 @@ export default function MapPage() {
       window.removeEventListener("localStorageChanged", onCustom);
     };
   }, []);
+
+  if (loading) {
+    return <div
+      style={{ display: 'flex', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center' }}>
+      <p>Loading...</p></div>
+  }
 
 
   return (
