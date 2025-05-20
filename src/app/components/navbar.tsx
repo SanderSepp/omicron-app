@@ -10,6 +10,8 @@ import {
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
+import { z } from "zod";
+import { type } from "@/app/api/openai/route";
 
 function showNotification(title: string, body: string, url?: string) {
   if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -32,10 +34,14 @@ function showNotification(title: string, body: string, url?: string) {
   }
 }
 
+function setEventToLocalStorage(event: z.infer<typeof type>) {
+  localStorage.setItem('event', event)
+}
+
 export function NavBar() {
   return (
     <nav className="bg-white shadow">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <NavigationMenu>
           <NavigationMenuList>
 
@@ -62,7 +68,7 @@ export function NavBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem >
+            <NavigationMenuItem>
               <Link href="/guidance" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Guidance
@@ -71,15 +77,18 @@ export function NavBar() {
             </NavigationMenuItem>
 
             <Button
-              onClick={() =>
-                showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates")
+              onClick={() => {
+                showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates");
+                setEventToLocalStorage("thunderStorm")
+              }
               }
             >
               1: Storm is coming
             </Button>
             <Button
-              onClick={() =>
-                showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/map")
+              onClick={() => {
+                showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/");
+              }
               }
             >
               2: Storm here
@@ -90,6 +99,15 @@ export function NavBar() {
               }
             >
               3: See crisis guidance
+            </Button>
+            <Button
+              onClick={() => {
+                showNotification('ℹ️ FLOOD', 'FLOOD', "http://localhost:3000/");
+                setEventToLocalStorage("flood")
+              }
+              }
+            >
+              3: FLOOD
             </Button>
           </NavigationMenuList>
           <NavigationMenuViewport />

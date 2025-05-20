@@ -3,7 +3,7 @@
 import { samplePoints } from "@/lib/dummy-data";
 import { MapPoint, RouteInfo, User } from "@/lib/types";
 import { useEffect, useState } from "react";
-import {users} from "@/lib/dummyData";
+import { users } from "@/lib/dummyData";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
@@ -151,6 +151,45 @@ export default function MapPage() {
 
   if (loading) return <div style={{ display: 'flex', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center' }}><p>Loading...</p></div>
 
+  const [profiles, setProfiles] = useState<any[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem("selectedProfile") || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [events, setEvents] = useState<string>(() => {
+    try {
+      return localStorage.getItem("event") || "";
+    } catch {
+      return "";
+    }
+  });
+
+  useEffect(() => {
+    // Handler for native storage events (cross-tab)
+    const onStorage = (e: StorageEvent) => {
+      console.log("Storage event: ", e);
+      if (e.key === "selectedProfile") setProfiles(JSON.parse(e.newValue || "[]"));
+      if (e.key === "event") setEvents(e.newValue || "");
+    };
+    window.addEventListener("storage", onStorage);
+
+    // Handler for custom event (same-tab updates)
+    const onCustom = (e: Event) => {
+      console.log("Custom event: ", e);
+      setProfiles(JSON.parse(localStorage.getItem("selectedProfile") || "[]"));
+      setEvents(localStorage.getItem("event") || "");
+    };
+    window.addEventListener("localStorageChanged", onCustom);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("localStorageChanged", onCustom);
+    };
+  }, []);
+
+
   return (
     <div className="flex-row md:flex h-screen bg-gray-100">
       {/* Sidebar - 1/3 width on desktop, full width on mobile with toggle */}
@@ -218,6 +257,23 @@ export default function MapPage() {
               )}
             </div>
           )}
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div>
+          <div
+            className="fixed bottom-2 right-2 bg-white/90 p-2 rounded shadow-lg text-xs w-64 max-h-64 overflow-auto z-50">
+            <strong className="block mb-1">⚙️ Storage Debug</strong>
+            <div>
+              <em>profiles:</em>
+              <pre className="whitespace-pre-wrap">{JSON.stringify(profiles, null, 2)}</pre>
+            </div>
+            <div>
+              <em>events:</em>
+              <pre className="whitespace-pre-wrap">{events}</pre>
+            </div>
+          </div>
         </div>
       </div>
 

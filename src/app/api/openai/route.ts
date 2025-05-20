@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
 
+export const type = z.enum(["flood", "earthQuake", "thunderStorm"]);
 const guidelines = z.object({
-  type: z.enum(["flood", "earthQuake", "thunderStorm"]),
+  type: type,
   guides: z.array(z.string()),
 });
 
