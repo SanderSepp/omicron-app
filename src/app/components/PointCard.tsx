@@ -1,15 +1,23 @@
-
 import React from 'react';
-import { MapPoint, RouteInfo } from '@/lib/types';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { MapPin, Navigation } from 'lucide-react';
+import {MapPoint, RouteInfo} from '@/lib/types';
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Navigation} from 'lucide-react';
 
 interface PointCardProps {
   point: MapPoint;
   routeInfo: RouteInfo | null;
   onGetDirections: () => void;
   onClose: () => void;
+}
+
+function jsonToHtml(obj) {
+    let html = '<ul>';
+    for (const [key, value] of Object.entries(obj)) {
+        html += `<li><strong>${key}:</strong> ${value}</li>`;
+    }
+    html += '</ul>';
+    return html;
 }
 
 const PointCard: React.FC<PointCardProps> = ({ point, routeInfo, onGetDirections, onClose }) => {
@@ -27,6 +35,9 @@ const PointCard: React.FC<PointCardProps> = ({ point, routeInfo, onGetDirections
       
       <CardContent className="pb-3">
         <p className="text-sm text-gray-700 mb-3">{point.description}</p>
+          <div className="text-sm text-gray-500">
+              {point.tags && <div dangerouslySetInnerHTML={{__html: jsonToHtml(point.tags)}} />}
+          </div>
         
         {point.instructions && (
           <div className="mb-3">

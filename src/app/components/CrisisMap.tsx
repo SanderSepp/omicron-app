@@ -132,6 +132,15 @@ const CrisisMap: React.FC<MapProps> = ({
         };
     }, []);
 
+    function jsonToHtml(obj) {
+        let html = '<ul>';
+        for (const [key, value] of Object.entries(obj)) {
+            html += `<li><strong>${key}:</strong> ${value}</li>`;
+        }
+        html += '</ul>';
+        return html;
+    }
+
     return (
         <div className="relative w-full h-full">
             <TooltipProvider delayDuration={0}>
@@ -188,6 +197,9 @@ const CrisisMap: React.FC<MapProps> = ({
                                 <div className="min-w-[180px] max-w-xs space-y-2">
                                     <div className="font-semibold">{tooltip.point.name}</div>
                                     <div className="text-sm text-gray-500">{tooltip.point.description}</div>
+                                    <div className="text-sm text-gray-500">
+                                        {tooltip.point.tags && <div dangerouslySetInnerHTML={{__html: jsonToHtml(tooltip.point.tags)}} />}
+                                    </div>
                                     <button
                                         className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                                         onClick={() => {

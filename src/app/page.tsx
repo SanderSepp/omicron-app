@@ -35,6 +35,7 @@ export default function MapPage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [from, setFrom] = useState<MapPoint>(selectablePoints[1]);
   const [to, setTo] = useState<MapPoint>(selectablePoints[0]);
+  const [loading, setLoading] = useState(false);
 
   // Get user location
   useEffect(() => {
@@ -53,6 +54,40 @@ export default function MapPage() {
       );
     }
   }, []);
+
+  useEffect(() => {
+    if (userLocation) {
+      fetchResources()
+    }
+  }, [userLocation]);
+
+  const fetchResources = async () => {
+    setLoading(true);
+    try {
+      const queryRes = await fetch(`/api/map?lat=${userLocation?.latitude}&lon=${userLocation?.longitude}&radius=${1000}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+      const data = await queryRes.json();
+
+      const list = data.map((place: any) => {
+        return {
+          id: place.name + place.lat + place.lon,
+          name: place.name,
+          latitude: place.lat,
+          longitude: place.lon,
+          tags: place.tags
+        }
+      });
+
+      setPoints(list)
+    } catch (error) {
+      console.error('Error fetching survival data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   // Get route info when point is selected
   useEffect(() => {
@@ -113,6 +148,8 @@ export default function MapPage() {
       setAuthModalOpen(false);
     }
   };
+
+  if (loading) return <div style={{ display: 'flex', width: '100%', height: '100vh', justifyContent: 'center', alignItems: 'center' }}><p>Loading...</p></div>
 
   return (
     <div className="flex-row md:flex h-screen bg-gray-100">
