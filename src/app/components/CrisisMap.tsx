@@ -130,9 +130,9 @@ const CrisisMap: React.FC<MapProps> = ({
             // @ts-ignore
             mapRef.current && mapRef.current.off('click', closeTooltip);
         };
-    }, []);
+    }, [mapRef.current]);
 
-    function jsonToHtml(obj) {
+    function jsonToHtml(obj: { [s: string]: unknown; } | ArrayLike<unknown>) {
         let html = '<ul>';
         for (const [key, value] of Object.entries(obj)) {
             html += `<li><strong>${key}:</strong> ${value}</li>`;
