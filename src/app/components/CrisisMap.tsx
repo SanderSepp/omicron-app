@@ -22,11 +22,12 @@ import {FaCartShopping} from "react-icons/fa6";
 import {IoTriangle} from "react-icons/io5";
 
 interface MapProps {
-    points: MapPoint[];
-    selectedPoint: MapPoint | null;
-    onSelectPoint: (point: MapPoint | null) => void;
-    onAddPoint?: (lat: number, lng: number) => void;
-    isAdmin: boolean;
+    points: MapPoint[],
+    selectedPoint: MapPoint | null,
+    onSelectPoint: (point: MapPoint | null) => void,
+    onAddPoint?: (lat: number, lng: number) => void,
+    isAdmin: boolean,
+    event?: any
 }
 
 // Initialize default Leaflet icon
@@ -37,7 +38,8 @@ const CrisisMap: React.FC<MapProps> = ({
                                            selectedPoint,
                                            onSelectPoint,
                                            onAddPoint,
-                                           isAdmin
+                                           isAdmin,
+                                           event
                                        }) => {
     const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
     const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
@@ -191,7 +193,7 @@ const CrisisMap: React.FC<MapProps> = ({
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {floodedAreaCoords && floodedAreaCoords.map((poly, idx) => (
+                    {event === "flood" && floodedAreaCoords && floodedAreaCoords.map((poly, idx) => (
                         <Polygon
                             key={idx}
                             positions={poly}
