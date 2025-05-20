@@ -3,6 +3,7 @@
 import { z } from "zod";
 import type { type } from "@/app/api/openai/route";
 import { Button } from "@/components/ui/button";
+import {useAppState} from "@/app/AppContext";
 
 function showNotification(title: string, body: string, url?: string) {
   if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -26,16 +27,19 @@ function showNotification(title: string, body: string, url?: string) {
 }
 
 function setEventToLocalStorage(event: z.infer<typeof type>) {
-  localStorage.setItem('event', event)
+    localStorage.setItem('event', event)
 }
 
 export default function Notifications() {
-  return (
+    const { event, setEvent } = useAppState();
+
+    return (
     <div className="p-6 space-x-2">
       <Button
         onClick={() => {
           showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates");
           setEventToLocalStorage("thunderStorm")
+            setEvent("thunderStorm")
         }
         }
       >
@@ -60,6 +64,7 @@ export default function Notifications() {
         onClick={() => {
           showNotification('ℹ️ FLOOD', 'FLOOD', "http://localhost:3000/");
           setEventToLocalStorage("flood")
+          setEvent('flood')
         }
         }
       >

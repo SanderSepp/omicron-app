@@ -5,9 +5,19 @@ export async function GET(request: NextRequest) {
     const latitude = searchParams.get("lat");
     const longitude = searchParams.get("lon");
     const radius = searchParams.get("radius");
+    const water = searchParams.get("water");
+    const shelter = searchParams.get("shelter");
+    const supermarket = searchParams.get("supermarket");
+    const pharmacy = searchParams.get("pharmacy");
     if (!latitude || !longitude) {
         return NextResponse.json({ error: "Missing lat/lon" }, { status: 400 });
     }
+
+    let queryParams = '';
+    if (water) queryParams += `node["amenity"="drinking_water"](around:${radius},${latitude},${longitude});`
+    if (shelter) queryParams += `node["shelter"="yes"](around:${radius},${latitude},${longitude});`
+    if (supermarket) queryParams += `node["shop"="supermarket"](around:${radius},${latitude},${longitude});`
+    if (pharmacy) queryParams += `node["amenity"="pharmacy"](around:${radius},${latitude},${longitude});`
 
     const res = await fetch(
         "https://overpass-api.de/api/interpreter",
@@ -16,9 +26,7 @@ export async function GET(request: NextRequest) {
             body: "data="+ encodeURIComponent(`
             [out:json];
             (
-              node["amenity"="drinking_water"](around:${radius},${latitude},${longitude});
-              node["shelter"="yes"](around:${radius},${latitude},${longitude});
-              node["shop"="supermarket"](around:${radius},${latitude},${longitude});
+                ${queryParams}
             );
             out body;
         `)

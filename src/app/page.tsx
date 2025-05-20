@@ -1,13 +1,30 @@
 "use client";
 
 import { samplePoints } from "@/lib/dummy-data";
-import { MapPoint, RouteInfo } from "@/lib/types";
+import {MapPoint, RouteInfo, User} from "@/lib/types";
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
+import {useAppState} from "@/app/AppContext";
+
+const selectablePoints: MapPoint[] = [
+  {
+    id: "special-1",
+    name: "Selectable Point",
+    description: "Custom selectable point in Tallinn",
+    latitude: 59.44272951579296,
+    longitude: 24.74231474877615,
+    address: "Tallinn, Estonia",
+  },
+  {
+    id: "userLocation",
+    latitude: 59.443859500865024,
+    longitude: 24.750544299208116
+  }
+];
 
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
@@ -15,7 +32,18 @@ export default function MapPage() {
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [from, setFrom] = useState<MapPoint>(selectablePoints[1]);
+  const [to, setTo] = useState<MapPoint>(selectablePoints[0]);
+
+  const [loading, setLoading] = useState(true);
+  const [showWater, setShowWater] = useState(true);
+  const [showShelter, setShowShelter] = useState(true);
+  const [showSupermarket, setShowSupermarket] = useState(true);
+  const [showPharmacy, setShowPharmacy] = useState(true);
+
+  const { event, setEvent } = useAppState();
 
   // Get user location
   useEffect(() => {
@@ -36,15 +64,23 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
+    console.log("FETCHING DATA");;
     if (userLocation) {
       fetchResources()
     }
-  }, [userLocation]);
+  }, [userLocation, showSupermarket, showWater, showPharmacy, showShelter, event]);
 
   const fetchResources = async () => {
     setLoading(true);
+
+    let filterOptions = '';
+    if (showWater) filterOptions += '&water=true';
+    if (showShelter) filterOptions += '&shelter=true';
+    if (showSupermarket) filterOptions += '&supermarket=true';
+    if (showPharmacy) filterOptions += '&pharmacy=true';
+
     try {
-      const queryRes = await fetch(`/api/map?lat=${userLocation?.latitude}&lon=${userLocation?.longitude}&radius=${1000}`, {
+      const queryRes = await fetch(`/api/map?lat=${userLocation?.latitude}&lon=${userLocation?.longitude}&radius=${1000}${filterOptions}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -116,13 +152,14 @@ export default function MapPage() {
       return [];
     }
   });
-  const [event, setEvent] = useState<string>(() => {
-    try {
-      return localStorage.getItem("event") || "";
-    } catch {
-      return "";
-    }
-  });
+
+  // const [event, setEvent] = useState<string>(() => {
+  //   try {
+  //     return localStorage.getItem("event") || "";
+  //   } catch {
+  //     return "";
+  //   }
+  // });
 
   useEffect(() => {
     // Handler for native storage events (cross-tab)
@@ -163,6 +200,15 @@ export default function MapPage() {
           selectedPoint={selectedPoint}
           onSelectPoint={handleSelectPoint}
           userLocation={userLocation}
+          user={currentUser}
+          onToggleWater={() => setShowWater(!showWater)}
+          onToggleShelter={() => setShowShelter(!showShelter)}
+          onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
+          onTogglePharmacy={() => setShowPharmacy(!showPharmacy)}
+          showWater={showWater}
+          showShelter={showShelter}
+          showSupermarket={showSupermarket}
+          showPharmacy={showPharmacy}
         />
       </div>
 
