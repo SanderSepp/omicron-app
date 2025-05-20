@@ -1,29 +1,13 @@
 "use client";
 
 import { samplePoints } from "@/lib/dummy-data";
-import { MapPoint, RouteInfo, User } from "@/lib/types";
+import { MapPoint, RouteInfo } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { users } from "@/lib/dummyData";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
-
-const selectablePoints: MapPoint[] = [
-  {
-    id: "special-1",
-    name: "Selectable Point",
-    description: "Custom selectable point in Tallinn",
-    latitude: 59.44272951579296,
-    longitude: 24.74231474877615,
-    address: "Tallinn, Estonia",
-  },
-  {
-    id: "userLocation",
-    latitude: 59.443859500865024,
-    longitude: 24.750544299208116
-  }
-];
+import Guidance from "@/app/components/guidance";
 
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
@@ -31,10 +15,6 @@ export default function MapPage() {
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [from, setFrom] = useState<MapPoint>(selectablePoints[1]);
-  const [to, setTo] = useState<MapPoint>(selectablePoints[0]);
   const [loading, setLoading] = useState(false);
 
   // Get user location
@@ -120,33 +100,13 @@ export default function MapPage() {
   };
 
   const handleAddPoint = (lat: number, lng: number) => {
-    if (currentUser?.isAdmin) {
-      setNewPointCoords({ lat, lng });
-      setSelectedPoint(null);
-    }
+    setNewPointCoords({ lat, lng });
+    setSelectedPoint(null);
   };
 
   const handleSavePoint = (point: MapPoint) => {
     setPoints(prev => [...prev, point]);
     setNewPointCoords(null);
-  };
-
-  const handleUserChange = (isAdmin: boolean) => {
-    if (currentUser) {
-      // Log out
-      setCurrentUser(null);
-    } else {
-      // Open auth modal
-      setAuthModalOpen(true);
-    }
-  };
-
-  const handleLogin = (userId: string) => {
-    const user = users.find(u => u.id === userId);
-    if (user) {
-      setCurrentUser(user);
-      setAuthModalOpen(false);
-    }
   };
 
   const [profiles, setProfiles] = useState<any[]>(() => {
@@ -156,7 +116,7 @@ export default function MapPage() {
       return [];
     }
   });
-  const [events, setEvents] = useState<string>(() => {
+  const [event, setEvent] = useState<string>(() => {
     try {
       return localStorage.getItem("event") || "";
     } catch {
@@ -169,7 +129,7 @@ export default function MapPage() {
     const onStorage = (e: StorageEvent) => {
       console.log("Storage event: ", e);
       if (e.key === "selectedProfile") setProfiles(JSON.parse(e.newValue || "[]"));
-      if (e.key === "event") setEvents(e.newValue || "");
+      if (e.key === "event") setEvent(e.newValue || "");
     };
     window.addEventListener("storage", onStorage);
 
@@ -177,7 +137,7 @@ export default function MapPage() {
     const onCustom = (e: Event) => {
       console.log("Custom event: ", e);
       setProfiles(JSON.parse(localStorage.getItem("selectedProfile") || "[]"));
-      setEvents(localStorage.getItem("event") || "");
+      setEvent(localStorage.getItem("event") || "");
     };
     window.addEventListener("localStorageChanged", onCustom);
 
@@ -203,42 +163,19 @@ export default function MapPage() {
           selectedPoint={selectedPoint}
           onSelectPoint={handleSelectPoint}
           userLocation={userLocation}
-          user={currentUser}
-          onUserChange={handleUserChange}
         />
       </div>
 
       {/* Main content - 2/3 width on desktop, full width on mobile with toggle */}
-      <div className="md:block md:w-2/3 lg:w-3/4 p-4">
+      <div className="md:block md:w-1/3 lg:w-2/4 p-4">
         <div className="relative h-full rounded-lg overflow-hidden">
           <CrisisMap
             points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
             onAddPoint={handleAddPoint}
-            isAdmin={currentUser?.isAdmin || false}
+            isAdmin={false}
           />
-
-          {/* Authentication Button - Mobile only */}
-          <div className="absolute top-4 left-4 md:hidden">
-            {/*<Button*/}
-            {/*  variant="secondary"*/}
-            {/*  size="sm"*/}
-            {/*  onClick={() => handleUserChange(!currentUser?.isAdmin)}*/}
-            {/*>*/}
-            {/*  {currentUser ? (*/}
-            {/*    <>*/}
-            {/*      <LogOut className="h-4 w-4 mr-2" />*/}
-            {/*      Logout*/}
-            {/*    </>*/}
-            {/*  ) : (*/}
-            {/*    <>*/}
-            {/*      <LogIn className="h-4 w-4 mr-2" />*/}
-            {/*      Login*/}
-            {/*    </>*/}
-            {/*  )}*/}
-            {/*</Button>*/}
-          </div>
 
           {/* Point Details or Add Form */}
           {(selectedPoint || newPointCoords) && (
@@ -252,7 +189,7 @@ export default function MapPage() {
                 />
               )}
 
-              {newPointCoords && currentUser?.isAdmin && (
+              {newPointCoords && (
                 <PointForm
                   coordinates={newPointCoords}
                   onSave={handleSavePoint}
@@ -262,6 +199,10 @@ export default function MapPage() {
             </div>
           )}
         </div>
+      </div>
+
+      <div className="md:block md:w-1/3 lg:w-1/4 p-4">
+        <Guidance guidanceType={event} />
       </div>
 
       <div className="p-6">
@@ -275,42 +216,11 @@ export default function MapPage() {
             </div>
             <div>
               <em>events:</em>
-              <pre className="whitespace-pre-wrap">{events}</pre>
+              <pre className="whitespace-pre-wrap">{event}</pre>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Mobile Map View */}
-      {/*<div className="fixed inset-0 md:hidden">*/}
-      {/*  {selectedPoint || newPointCoords ? (*/}
-      {/*    <div className="absolute inset-x-0 bottom-0 z-10 p-4">*/}
-      {/*      {selectedPoint && !newPointCoords && (*/}
-      {/*        <PointCard*/}
-      {/*          point={selectedPoint}*/}
-      {/*          routeInfo={routeInfo}*/}
-      {/*          onGetDirections={handleGetDirections}*/}
-      {/*          onClose={() => setSelectedPoint(null)}*/}
-      {/*        />*/}
-      {/*      )}*/}
-
-      {/*      {newPointCoords && currentUser?.isAdmin && (*/}
-      {/*        <PointForm*/}
-      {/*          coordinates={newPointCoords}*/}
-      {/*          onSave={handleSavePoint}*/}
-      {/*          onCancel={() => setNewPointCoords(null)}*/}
-      {/*        />*/}
-      {/*      )}*/}
-      {/*    </div>*/}
-      {/*  ) : null}*/}
-      {/*</div>*/}
-
-      {/*/!* Auth Modal *!/*/}
-      {/*<AuthModal*/}
-      {/*  open={authModalOpen}*/}
-      {/*  onClose={() => setAuthModalOpen(false)}*/}
-      {/*  onLogin={handleLogin}*/}
-      {/*/>*/}
     </div>
   );
 }

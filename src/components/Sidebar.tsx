@@ -1,39 +1,33 @@
-
 import React, { useState } from 'react';
 import { MapPoint } from '@/lib/types';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { calculateDistance } from '@/lib/mapUtils';
-import { User, MapPin, Search } from 'lucide-react';
+import { MapPin, Search } from 'lucide-react';
 
 interface SidebarProps {
   points: MapPoint[];
   selectedPoint: MapPoint | null;
   onSelectPoint: (point: MapPoint) => void;
-  userLocation:  MapPoint | null;
-  user: { name: string; isAdmin: boolean } | null;
-  onUserChange: (isAdmin: boolean) => void;
+  userLocation: MapPoint | null;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  points,
-  selectedPoint,
-  onSelectPoint,
-  userLocation,
-  user,
-  onUserChange
-}) => {
+                                           points,
+                                           selectedPoint,
+                                           onSelectPoint,
+                                           userLocation,
+                                         }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Filter points based on search term
-  const filteredPoints = points.filter(point => 
+  const filteredPoints = points.filter(point =>
     point.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     point.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     point.address?.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   // Sort points by distance if user location is available
   const sortedPoints = [...filteredPoints].sort((a, b) => {
     if (userLocation) {
@@ -55,19 +49,8 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-bold">Map Points</h2>
-          <div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex items-center"
-              onClick={() => onUserChange(!user?.isAdmin)}
-            >
-              <User className="h-4 w-4 mr-2" />
-              {user ? user.name : 'Guest'}
-            </Button>
-          </div>
         </div>
-        
+
         <div className="relative mb-4">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
           <Input
@@ -77,18 +60,10 @@ const Sidebar: React.FC<SidebarProps> = ({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        
-        {user?.isAdmin && (
-          <div className="mb-4">
-            <div className="bg-amber-50 border border-amber-200 text-amber-800 p-2.5 rounded-md text-xs">
-              <strong>Admin Mode:</strong> Click on the map to add new points.
-            </div>
-          </div>
-        )}
-        
+
         <Separator className="my-2" />
       </div>
-      
+
       <ScrollArea className="flex-1 px-4">
         {sortedPoints.length > 0 ? (
           <div className="space-y-2 pb-4">
@@ -114,7 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                         {calculateDistance(
                           userLocation.latitude,
                           userLocation.longitude,
-                          point.latitude, 
+                          point.latitude,
                           point.longitude
                         )} km away
                       </div>

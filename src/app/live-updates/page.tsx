@@ -8,7 +8,7 @@ export default function Page() {
   const lon = 24.7536; // Tallinn
 
   return (
-    <main className="p-8 flex justify-center">
+    <main className="flex justify-center">
       <WeatherCard lat={lat} lon={lon} />
     </main>
   );
