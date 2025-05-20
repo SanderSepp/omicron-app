@@ -1,7 +1,6 @@
 "use client";
 
 import { samplePoints } from "@/lib/dummy-data";
-import { getRouteInformation } from "@/lib/map-utils";
 import { MapPoint, RouteInfo, User } from "@/lib/types";
 import { useEffect, useState } from "react";
 import PointCard from "@/app/map/components/PointCard";
@@ -10,14 +9,32 @@ import CrisisMap from "@/app/map/components/CrisisMap";
 import {users} from "@/lib/dummyData";
 import Sidebar from "@/components/Sidebar";
 
+const selectablePoints: MapPoint[] = [
+  {
+    id: "special-1",
+    name: "Selectable Point",
+    description: "Custom selectable point in Tallinn",
+    latitude: 59.44272951579296,
+    longitude: 24.74231474877615,
+    address: "Tallinn, Estonia",
+  },
+  {
+    id: "userLocation",
+    latitude: 59.443859500865024,
+    longitude: 24.750544299208116
+  }
+];
+
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
   const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [from, setFrom] = useState<MapPoint>(selectablePoints[1]);
+  const [to, setTo] = useState<MapPoint>(selectablePoints[0]);
 
   // Get user location
   useEffect(() => {
@@ -25,8 +42,9 @@ export default function MapPage() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
+            id: "userLocation", // Dummy ID, replace with actual logic
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
           });
         },
         (error) => {
@@ -39,12 +57,12 @@ export default function MapPage() {
   // Get route info when point is selected
   useEffect(() => {
     if (selectedPoint && userLocation) {
-      getRouteInformation(
-        userLocation,
-        { lat: selectedPoint.latitude, lng: selectedPoint.longitude }
-      ).then(info => {
-        setRouteInfo(info);
-      });
+      // getRouteInformation(
+      //   userLocation,
+      //   { lat: selectedPoint.latitude, lng: selectedPoint.longitude }
+      // ).then(info => {
+      //   setRouteInfo(info);
+      // });
     } else {
       setRouteInfo(null);
     }
@@ -97,9 +115,7 @@ export default function MapPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {/*<Toaster />*/}
-
+    <div className="flex-row md:flex h-screen bg-gray-100">
       {/* Sidebar - 1/3 width on desktop, full width on mobile with toggle */}
       <div className="w-full md:w-1/3 lg:w-1/4 p-4">
         <Sidebar
@@ -113,7 +129,7 @@ export default function MapPage() {
       </div>
 
       {/* Main content - 2/3 width on desktop, full width on mobile with toggle */}
-      <div className="hidden md:block md:w-2/3 lg:w-3/4 p-4">
+      <div className="md:block md:w-2/3 lg:w-3/4 p-4">
         <div className="relative h-full rounded-lg overflow-hidden">
           <CrisisMap
             points={points}
@@ -169,28 +185,28 @@ export default function MapPage() {
       </div>
 
       {/* Mobile Map View */}
-      <div className="fixed inset-0 md:hidden">
-        {selectedPoint || newPointCoords ? (
-          <div className="absolute inset-x-0 bottom-0 z-10 p-4">
-            {selectedPoint && !newPointCoords && (
-              <PointCard
-                point={selectedPoint}
-                routeInfo={routeInfo}
-                onGetDirections={handleGetDirections}
-                onClose={() => setSelectedPoint(null)}
-              />
-            )}
+      {/*<div className="fixed inset-0 md:hidden">*/}
+      {/*  {selectedPoint || newPointCoords ? (*/}
+      {/*    <div className="absolute inset-x-0 bottom-0 z-10 p-4">*/}
+      {/*      {selectedPoint && !newPointCoords && (*/}
+      {/*        <PointCard*/}
+      {/*          point={selectedPoint}*/}
+      {/*          routeInfo={routeInfo}*/}
+      {/*          onGetDirections={handleGetDirections}*/}
+      {/*          onClose={() => setSelectedPoint(null)}*/}
+      {/*        />*/}
+      {/*      )}*/}
 
-            {newPointCoords && currentUser?.isAdmin && (
-              <PointForm
-                coordinates={newPointCoords}
-                onSave={handleSavePoint}
-                onCancel={() => setNewPointCoords(null)}
-              />
-            )}
-          </div>
-        ) : null}
-      </div>
+      {/*      {newPointCoords && currentUser?.isAdmin && (*/}
+      {/*        <PointForm*/}
+      {/*          coordinates={newPointCoords}*/}
+      {/*          onSave={handleSavePoint}*/}
+      {/*          onCancel={() => setNewPointCoords(null)}*/}
+      {/*        />*/}
+      {/*      )}*/}
+      {/*    </div>*/}
+      {/*  ) : null}*/}
+      {/*</div>*/}
 
       {/*/!* Auth Modal *!/*/}
       {/*<AuthModal*/}

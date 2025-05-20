@@ -12,7 +12,7 @@ interface SidebarProps {
   points: MapPoint[];
   selectedPoint: MapPoint | null;
   onSelectPoint: (point: MapPoint) => void;
-  userLocation: { lat: number; lng: number } | null;
+  userLocation:  MapPoint | null;
   user: { name: string; isAdmin: boolean } | null;
   onUserChange: (isAdmin: boolean) => void;
 }
@@ -29,20 +29,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   
   // Filter points based on search term
   const filteredPoints = points.filter(point => 
-    point.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    point.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    point.address.toLowerCase().includes(searchTerm.toLowerCase())
+    point.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    point.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    point.address?.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
   // Sort points by distance if user location is available
   const sortedPoints = [...filteredPoints].sort((a, b) => {
     if (userLocation) {
       const distA = calculateDistance(
-        userLocation.lat, userLocation.lng, 
+        userLocation.latitude, userLocation.longitude,
         a.latitude, a.longitude
       );
       const distB = calculateDistance(
-        userLocation.lat, userLocation.lng, 
+        userLocation.latitude, userLocation.longitude,
         b.latitude, b.longitude
       );
       return distA - distB;
@@ -112,8 +112,8 @@ const Sidebar: React.FC<SidebarProps> = ({
                     {userLocation && (
                       <div className="text-xs text-gray-400 mt-1">
                         {calculateDistance(
-                          userLocation.lat, 
-                          userLocation.lng, 
+                          userLocation.latitude,
+                          userLocation.longitude,
                           point.latitude, 
                           point.longitude
                         )} km away

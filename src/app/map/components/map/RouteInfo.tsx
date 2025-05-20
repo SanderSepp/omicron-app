@@ -1,13 +1,11 @@
 
 import React from 'react';
-import { RouteInfo as RouteInfoType } from '@/lib/types';
+import {MapPoint, RouteInfo as RouteInfoType} from '@/lib/types';
 import { formatCoordinates } from '@/lib/map-utils';
 
 interface RouteInfoProps {
   routeInfo: RouteInfoType;
-  selectedPoint: {
-    name: string;
-  };
+  selectedPoint: MapPoint;
   userLocation: [number, number] | null;
 }
 
