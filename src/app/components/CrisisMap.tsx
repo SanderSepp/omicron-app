@@ -33,6 +33,9 @@ interface MapProps {
 // Initialize default Leaflet icon
 initializeDefaultIcon();
 
+const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
+const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
+
 const CrisisMap: React.FC<MapProps> = ({
                                            points,
                                            selectedPoint,
@@ -56,7 +59,14 @@ const CrisisMap: React.FC<MapProps> = ({
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const userPos: [number, number] = [position.coords.latitude, position.coords.longitude];
-                    setUserLocation(userPos);
+                    if (mockuserloclat && mockuserloclon) {
+                        setUserLocation([
+                            Number(mockuserloclat),
+                            Number(mockuserloclon)
+                        ]);
+                    } else {
+                        setUserLocation(userPos);
+                    }
                     setMapCenter(userPos);
                 },
                 () => {
