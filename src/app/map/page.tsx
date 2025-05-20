@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import PointCard from "@/app/map/components/PointCard";
 import PointForm from "@/app/map/components/PointForm";
 import CrisisMap from "@/app/map/components/CrisisMap";
+import {users} from "@/lib/dummyData";
+import Sidebar from "@/components/Sidebar";
 
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
@@ -76,23 +78,23 @@ export default function MapPage() {
     setNewPointCoords(null);
   };
 
-  // const handleUserChange = (isAdmin: boolean) => {
-  //   if (currentUser) {
-  //     // Log out
-  //     setCurrentUser(null);
-  //   } else {
-  //     // Open auth modal
-  //     setAuthModalOpen(true);
-  //   }
-  // };
+  const handleUserChange = (isAdmin: boolean) => {
+    if (currentUser) {
+      // Log out
+      setCurrentUser(null);
+    } else {
+      // Open auth modal
+      setAuthModalOpen(true);
+    }
+  };
 
-  // const handleLogin = (userId: string) => {
-  //   const user = users.find(u => u.id === userId);
-  //   if (user) {
-  //     setCurrentUser(user);
-  //     setAuthModalOpen(false);
-  //   }
-  // };
+  const handleLogin = (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      setCurrentUser(user);
+      setAuthModalOpen(false);
+    }
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -100,14 +102,14 @@ export default function MapPage() {
 
       {/* Sidebar - 1/3 width on desktop, full width on mobile with toggle */}
       <div className="w-full md:w-1/3 lg:w-1/4 p-4">
-        {/*<Sidebar*/}
-        {/*  points={points}*/}
-        {/*  selectedPoint={selectedPoint}*/}
-        {/*  onSelectPoint={handleSelectPoint}*/}
-        {/*  userLocation={userLocation}*/}
-        {/*  user={currentUser}*/}
-        {/*  onUserChange={handleUserChange}*/}
-        {/*/>*/}
+        <Sidebar
+          points={points}
+          selectedPoint={selectedPoint}
+          onSelectPoint={handleSelectPoint}
+          userLocation={userLocation}
+          user={currentUser}
+          onUserChange={handleUserChange}
+        />
       </div>
 
       {/* Main content - 2/3 width on desktop, full width on mobile with toggle */}
