@@ -17,8 +17,8 @@ import {createMarkerIcon, initializeDefaultIcon, userMarkerIcon} from './map/Mar
 
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {useFloodedCoords} from "@/hooks/useFloodedCoordinates";
-import {FaTint} from "react-icons/fa";
-import {FaShop} from "react-icons/fa6";
+import {FaBookMedical, FaTint} from "react-icons/fa";
+import {FaCartShopping} from "react-icons/fa6";
 import {IoTriangle} from "react-icons/io5";
 
 interface MapProps {
@@ -152,14 +152,15 @@ const CrisisMap: React.FC<MapProps> = ({
         // @ts-ignore
         if (point.tags && point.tags["amenity"] === "drinking_water") {
             iconEl = <FaTint color="#0074D9" size={24}/>;
-        } else { // @ts-ignore
-            if (point.tags && point.tags["shelter"] === "yes") {
-                iconEl = <IoTriangle color="#221C51" size={24}/>;
-            } else { // @ts-ignore
-                if (point.tags && point.tags["shop"] === "supermarket") {
-                    iconEl = <FaShop color="#27ae60" size={24}/>;
-                }
-            }
+            // @ts-ignore
+        } else if (point.tags && point.tags["amenity"] === "pharmacy") {
+            iconEl = <FaBookMedical color="#FF0000" size={24}/>;
+            // @ts-ignore
+        } else if (point.tags && point.tags["shelter"] === "yes") {
+            iconEl = <IoTriangle color="#221C51" size={24}/>;
+            // @ts-ignore
+        } else if (point.tags && point.tags["shop"] === "supermarket") {
+            iconEl = <FaCartShopping color="#27ae60" size={24}/>;
         }
 
         if (iconEl) {
