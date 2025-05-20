@@ -3,12 +3,34 @@
 import Link from "next/link";
 import {
   NavigationMenu,
-  NavigationMenuList,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuViewport,
+  NavigationMenuList,
   navigationMenuTriggerStyle,
+  NavigationMenuViewport,
 } from "@/components/ui/navigation-menu";
+import { Button } from "@/components/ui/button";
+
+function showNotification(title: string, body: string, url?: string) {
+  if (typeof window === 'undefined' || !('Notification' in window)) {
+    console.warn('This browser does not support notifications.')
+    return
+  }
+
+  if (Notification.permission === 'granted') {
+    const notif = new Notification(title, {
+      body,
+      // icon: '/icons/alert.png', // ← optional
+    })
+    if (url) {
+      notif.onclick = () => {
+        window.open(url, '_self')
+      }
+    }
+  } else {
+    console.warn('Notification permission not granted.')
+  }
+}
 
 export function NavBar() {
   return (
@@ -47,13 +69,35 @@ export function NavBar() {
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
+            <NavigationMenuItem >
               <Link href="/guidance" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Guidance
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
+
+            <Button
+              onClick={() =>
+                showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates")
+              }
+            >
+              1: Storm is coming
+            </Button>
+            <Button
+              onClick={() =>
+                showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/map")
+              }
+            >
+              2: Storm here
+            </Button>
+            <Button
+              onClick={() =>
+                showNotification('ℹ️ Crisis Guidance', 'See crisis guidance', "http://localhost:3000/guidance")
+              }
+            >
+              3: See crisis guidance
+            </Button>
           </NavigationMenuList>
           <NavigationMenuViewport />
         </NavigationMenu>
