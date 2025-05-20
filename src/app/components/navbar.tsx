@@ -38,16 +38,9 @@ export function NavBar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <NavigationMenu>
           <NavigationMenuList>
-            <NavigationMenuItem>
-              <Link href="/" passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                  Home
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/map" passHref>
+              <Link href="/" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Crisis Map
                 </NavigationMenuLink>
