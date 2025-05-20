@@ -64,11 +64,38 @@ export default function MapPage() {
   }, []);
 
   useEffect(() => {
+    if (event === 'calm') {
+      setShowWater(true);
+      setShowShelter(true);
+      setShowSupermarket(true);
+      setShowPharmacy(true);
+    }
+    if (event === 'thunderStormComing') {
+      setShowWater(true);
+      setShowShelter(false);
+      setShowSupermarket(true);
+      setShowPharmacy(true);
+    }
+    if (event === 'thunderStorm') {
+      setShowWater(false);
+      setShowShelter(true);
+      setShowSupermarket(false);
+      setShowPharmacy(false);
+    }
+    if (event === 'flood') {
+      setShowWater(false);
+      setShowShelter(true);
+      setShowSupermarket(false);
+      setShowPharmacy(false);
+    }
+  }, [event]);
+
+  useEffect(() => {
     console.log("FETCHING DATA");;
     if (userLocation) {
       fetchResources()
     }
-  }, [userLocation, showSupermarket, showWater, showPharmacy, showShelter, event]);
+  }, [userLocation, showSupermarket, showWater, showPharmacy, showShelter]);
 
   const fetchResources = async () => {
     setLoading(true);
@@ -153,13 +180,6 @@ export default function MapPage() {
     }
   });
 
-  // const [event, setEvent] = useState<string>(() => {
-  //   try {
-  //     return localStorage.getItem("event") || "";
-  //   } catch {
-  //     return "";
-  //   }
-  // });
 
   useEffect(() => {
     // Handler for native storage events (cross-tab)
