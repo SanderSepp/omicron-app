@@ -1,20 +1,25 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {MapPoint, RouteInfo} from '@/lib/types';
 import {getRouteInformation} from '@/lib/map-utils';
-import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet';
+import {MapContainer, Marker, Polygon, Popup, TileLayer} from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+import * as ReactDOMServer from 'react-dom/server';
 
 // Import our new components
 import MapInteractions from './map/MapInteractions';
 import ChangeMapView from './map/ChangeMapView';
 import RouteInfoDisplay from './map/RouteInfo';
 import MapControls from './map/MapControls';
-import {createMarkerIcon, userMarkerIcon, initializeDefaultIcon} from './map/MarkerIcons';
+import {createMarkerIcon, initializeDefaultIcon, userMarkerIcon} from './map/MarkerIcons';
 
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {useFloodedCoords} from "@/hooks/useFloodedCoordinates";
+import {FaTint} from "react-icons/fa";
+import {FaShop} from "react-icons/fa6";
+import {IoTriangle} from "react-icons/io5";
 
 interface MapProps {
     points: MapPoint[];
@@ -41,6 +46,7 @@ const CrisisMap: React.FC<MapProps> = ({
     const routingControlRef = useRef<any>(null);
     // Tooltip state: { point, position: { x, y } }
     const [tooltip, setTooltip] = useState<{ point: MapPoint; position: { x: number; y: number } } | null>(null);
+    const floodedAreaCoords = useFloodedCoords();
 
     // Get user location
     useEffect(() => {
@@ -141,6 +147,34 @@ const CrisisMap: React.FC<MapProps> = ({
         return html;
     }
 
+    function getCustomIcon(point: MapPoint) {
+        let iconEl = null;
+        // @ts-ignore
+        if (point.tags && point.tags["amenity"] === "drinking_water") {
+            iconEl = <FaTint color="#0074D9" size={24}/>;
+        } else { // @ts-ignore
+            if (point.tags && point.tags["shelter"] === "yes") {
+                iconEl = <IoTriangle color="#221C51" size={24}/>;
+            } else { // @ts-ignore
+                if (point.tags && point.tags["shop"] === "supermarket") {
+                    iconEl = <FaShop color="#27ae60" size={24}/>;
+                }
+            }
+        }
+
+        if (iconEl) {
+            return L.divIcon({
+                className: 'custom-div-icon',
+                html: ReactDOMServer.renderToString(iconEl),
+                iconSize: [30, 30],
+                iconAnchor: [15, 30],
+                popupAnchor: [0, -30],
+            });
+        }
+        // fallback to default
+        return createMarkerIcon(point.id === selectedPoint?.id);
+    }
+
     return (
         <div className="relative w-full h-full">
             <TooltipProvider delayDuration={0}>
@@ -156,24 +190,54 @@ const CrisisMap: React.FC<MapProps> = ({
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
+                    {floodedAreaCoords && floodedAreaCoords.map((poly, idx) => (
+                        <Polygon
+                            key={idx}
+                            positions={poly}
+                            pathOptions={{color: 'blue', fillOpacity: 0.3}}
+                        />
+                    ))}
+
                     {userLocation && (
                         <Marker position={userLocation} icon={userMarkerIcon}>
                             <Popup>Your current location</Popup>
                         </Marker>
                     )}
 
-                    {points.map((point) => (
-                        <Marker
-                            key={point.id}
-                            position={[point.latitude, point.longitude]}
-                            icon={createMarkerIcon(point.id === selectedPoint?.id)}
-                            eventHandlers={{
-                                click: () => {
-                                    handleMarkerClick(point);
-                                }
-                            }}
-                        />
-                    ))}
+                    {points.map((point) => {
+                        const icon = getCustomIcon(point); // This picks a custom icon if matched
+
+                        return (
+                            <Marker
+                                key={point.id}
+                                position={[point.latitude, point.longitude]}
+                                icon={icon}
+                                eventHandlers={{
+                                    click: () => {
+                                        handleMarkerClick(point);
+                                    }
+                                }}
+                            />
+                        );
+                    })}
+                    {/*{points.map((point) => {*/}
+                    {/*    // const isDrinkingWater = point.tags["amenity"] === "drinking_water";*/}
+                    {/*    // const isBus = point.tags["bus"] === "yes";*/}
+                    {/*    // console.log("isDrinkingWater:", isDrinkingWater);*/}
+                    {/*    // console.log("isBus:", isBus);*/}
+                    {/*    return (*/}
+                    {/*        <Marker*/}
+                    {/*            key={point.id}*/}
+                    {/*            position={[point.latitude, point.longitude]}*/}
+                    {/*            icon={createMarkerIcon(point.id === selectedPoint?.id)}*/}
+                    {/*            eventHandlers={{*/}
+                    {/*                click: () => {*/}
+                    {/*                    handleMarkerClick(point);*/}
+                    {/*                }*/}
+                    {/*            }}*/}
+                    {/*        />*/}
+                    {/*    );*/}
+                    {/*})}*/}
 
                     <MapInteractions onAddPoint={onAddPoint} isAdmin={isAdmin}/>
                     {userLocation && <ChangeMapView coords={userLocation}/>}
@@ -198,7 +262,8 @@ const CrisisMap: React.FC<MapProps> = ({
                                     <div className="font-semibold">{tooltip.point.name}</div>
                                     <div className="text-sm text-gray-500">{tooltip.point.description}</div>
                                     <div className="text-sm text-gray-500">
-                                        {tooltip.point.tags && <div dangerouslySetInnerHTML={{__html: jsonToHtml(tooltip.point.tags)}} />}
+                                        {tooltip.point.tags &&
+                                            <div dangerouslySetInnerHTML={{__html: jsonToHtml(tooltip.point.tags)}}/>}
                                     </div>
                                     <button
                                         className="mt-2 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
