@@ -1,4 +1,3 @@
-// app/components/NavBar.tsx
 "use client";
 
 import Link from "next/link";
@@ -45,6 +44,13 @@ export function NavBar() {
               <Link href="/profile" passHref>
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Profile
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <Link href="/guidance" passHref>
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  Guidance
                 </NavigationMenuLink>
               </Link>
             </NavigationMenuItem>
