@@ -1,30 +1,43 @@
+import { UserProfile } from "@/app/profile/page";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Props = {
-  guidanceType?: string;
+  profile: UserProfile;
 }
-export default function Guidance({ guidanceType }: Props) {
+
+const keysToCheck = [
+  "hasChildren",
+  "medications",
+  "conditions",
+  "dependents",
+  "allergies",
+] as const;
+
+function collectPresentKeys(p: UserProfile) {
+  return keysToCheck.filter((key) => {
+    const val = p[key];
+    if (Array.isArray(val)) {
+      return val.length > 0;
+    }
+    // for numbers (0 is falsy but you might still want to include it—adjust as needed)
+    return val !== undefined && val !== null && val !== false;
+  });
+}
+
+export default function ProfileGuidance({ profile }: Props) {
+  const types = collectPresentKeys(profile);
+
+  console.log('types', types);
   const { data } = useQuery({
-    queryKey: ['openaiData', guidanceType],
+    queryKey: ['profileData', types],
     queryFn: async () => {
-      if (!guidanceType) return [];
-      const res = await fetch(`/api/openai?types=${guidanceType}`);
+      if (!types) return [];
+      const res = await fetch(`/api/openai?types=${types.join(",")}`);
       if (!res.ok) throw new Error('Network response was not ok');
       return res.json();
     }
   });
-
-  if (!guidanceType) {
-    return (
-      <div className="p-4 space-y-6">
-        <Card className="p-4">
-          <CardTitle className="whitespace-nowrap">You are safe!</CardTitle>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-6">
       {Array.isArray(data) && data.length > 0 && (
@@ -48,5 +61,4 @@ export default function Guidance({ guidanceType }: Props) {
       )}
     </div>
   );
-
 }

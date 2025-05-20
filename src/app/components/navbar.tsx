@@ -44,7 +44,7 @@ export function NavBar() {
 
   return (
       <nav className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <NavigationMenu>
             <NavigationMenuList>
 
@@ -86,48 +86,47 @@ export function NavBar() {
                 </Link>
               </NavigationMenuItem>
 
-              <div>
-                <Button
-                    onClick={() => {
-                      setEventToLocalStorage("calm")
-                      setEvent("calm")
-                    }}
-                >
-                  1: Everything is calm
-                </Button>
-
-                <Button
-                    onClick={() => {
-                      showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates");
-                      setEventToLocalStorage("thunderStorm")
-                      setEvent("thunderStormComing")
-                    }}
-                >
-                  2: Storm is coming
-                </Button>
-                <Button
-                    onClick={() => {
-                      showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/");
-                      setEvent("thunderStorm")
-                    }}
-                >
-                  3: Storm here
-                </Button>
-                <Button
-                    onClick={() => {
-                      showNotification('ℹ️ FLOOD', 'FLOOD', "http://localhost:3000/");
-                      setEventToLocalStorage("flood")
-                      setEvent("flood")
-                    }
-                    }
-                >
-                  4: Flood
-                </Button>
-              </div>
-
             </NavigationMenuList>
             <NavigationMenuViewport />
           </NavigationMenu>
+          <div className="space-x-2">
+            <Button
+              onClick={() => {
+                setEventToLocalStorage("calm")
+                setEvent("calm")
+              }}
+            >
+              1: Everything is calm
+            </Button>
+
+            <Button
+              onClick={() => {
+                showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates");
+                setEventToLocalStorage("thunderStorm")
+                setEvent("thunderStormComing")
+              }}
+            >
+              2: Storm is coming
+            </Button>
+            <Button
+              onClick={() => {
+                showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/");
+                setEvent("thunderStorm")
+              }}
+            >
+              3: Storm here
+            </Button>
+            <Button
+              onClick={() => {
+                showNotification('ℹ️ FLOOD', 'FLOOD', "http://localhost:3000/");
+                setEventToLocalStorage("flood")
+                setEvent("flood")
+              }
+              }
+            >
+              4: Flood
+            </Button>
+          </div>
         </div>
       </nav>
   );

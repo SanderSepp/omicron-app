@@ -14,10 +14,10 @@ type EmergencyContact = {
   phone: string;
 };
 
-type UserProfile = {
+export type UserProfile = {
   name: string;
   age: number;
-  maintainables: number;
+  dependents: number;
   hasChildren: boolean;
   medications: string[];
   allergies: string[];
@@ -30,7 +30,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "Default",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: true,
     medications: ["Ibuprofen", "Metformin"],
     allergies: ["Peanuts", "Penicillin"],
@@ -40,7 +40,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Medications",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: true,
     medications: [],
     allergies: ["Peanuts", "Penicillin"],
@@ -50,7 +50,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Allergies",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: true,
     medications: ["Ibuprofen", "Metformin"],
     allergies: [],
@@ -60,7 +60,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Children",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: false,
     medications: ["Ibuprofen", "Metformin"],
     allergies: ["Peanuts", "Penicillin"],
@@ -70,7 +70,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Meds & Allergies",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: true,
     medications: [],
     allergies: [],
@@ -80,7 +80,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Meds & No Children",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: false,
     medications: [],
     allergies: ["Peanuts", "Penicillin"],
@@ -90,7 +90,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "No Allergies & No Children",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: false,
     medications: ["Ibuprofen", "Metformin"],
     allergies: [],
@@ -100,7 +100,7 @@ const defaultProfiles: UserProfile[] = [
   {
     name: "Minimal",
     age: 34,
-    maintainables: 2,
+    dependents: 2,
     hasChildren: false,
     medications: [],
     allergies: [],
@@ -176,8 +176,8 @@ export default function ProfilePage() {
         <CardContent className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Maintainables</p>
-              <p className="text-lg">{selectedProfile.maintainables}</p>
+              <p className="text-sm font-medium text-muted-foreground">dependents</p>
+              <p className="text-lg">{selectedProfile.dependents}</p>
             </div>
             <div>
               <p className="text-sm font-medium text-muted-foreground">Has Children</p>

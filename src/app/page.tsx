@@ -1,14 +1,15 @@
 "use client";
 
 import { samplePoints } from "@/lib/dummy-data";
-import {MapPoint, RouteInfo, User} from "@/lib/types";
+import { MapPoint, RouteInfo, User } from "@/lib/types";
 import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
-import {useAppState} from "@/app/AppContext";
+import { useAppState } from "@/app/AppContext";
+import ProfileGuidance from "@/app/components/profile-guidance";
 
 const selectablePoints: MapPoint[] = [
   {
@@ -91,7 +92,7 @@ export default function MapPage() {
   }, [event]);
 
   useEffect(() => {
-    console.log("FETCHING DATA");;
+    console.log("FETCHING DATA");
     if (userLocation) {
       fetchResources()
     }
@@ -172,9 +173,10 @@ export default function MapPage() {
     setNewPointCoords(null);
   };
 
-  const [profiles, setProfiles] = useState<any[]>(() => {
+  const [profile, setProfile] = useState<any | null>(() => {
     try {
-      return JSON.parse(localStorage.getItem("selectedProfile") || "[]");
+      const storedProfiles = localStorage.getItem("selectedProfile");
+      return storedProfiles ? JSON.parse(storedProfiles) : null;
     } catch {
       return [];
     }
@@ -185,7 +187,7 @@ export default function MapPage() {
     // Handler for native storage events (cross-tab)
     const onStorage = (e: StorageEvent) => {
       console.log("Storage event: ", e);
-      if (e.key === "selectedProfile") setProfiles(JSON.parse(e.newValue || "[]"));
+      if (e.key === "selectedProfile") setProfile(JSON.parse(e.newValue || "[]"));
       if (e.key === "event") setEvent(e.newValue || "");
     };
     window.addEventListener("storage", onStorage);
@@ -193,7 +195,7 @@ export default function MapPage() {
     // Handler for custom event (same-tab updates)
     const onCustom = (e: Event) => {
       console.log("Custom event: ", e);
-      setProfiles(JSON.parse(localStorage.getItem("selectedProfile") || "[]"));
+      setProfile(JSON.parse(localStorage.getItem("selectedProfile") || "[]"));
       setEvent(localStorage.getItem("event") || "");
     };
     window.addEventListener("localStorageChanged", onCustom);
@@ -212,63 +214,66 @@ export default function MapPage() {
 
 
   return (
-    <div className="flex-row md:flex h-screen bg-gray-100">
-      {/* Sidebar - 1/3 width on desktop, full width on mobile with toggle */}
-      <div className="w-full md:w-1/3 lg:w-1/4 p-4">
-        <Sidebar
-          points={points}
-          selectedPoint={selectedPoint}
-          onSelectPoint={handleSelectPoint}
-          userLocation={userLocation}
-          user={currentUser}
-          onToggleWater={() => setShowWater(!showWater)}
-          onToggleShelter={() => setShowShelter(!showShelter)}
-          onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
-          onTogglePharmacy={() => setShowPharmacy(!showPharmacy)}
-          showWater={showWater}
-          showShelter={showShelter}
-          showSupermarket={showSupermarket}
-          showPharmacy={showPharmacy}
-        />
-      </div>
-
-      {/* Main content - 2/3 width on desktop, full width on mobile with toggle */}
-      <div className="md:block md:w-1/3 lg:w-2/4 p-4">
-        <div className="relative h-full rounded-lg overflow-hidden">
-          <CrisisMap
+    <div className="">
+      <div className="flex-row md:flex h-screen bg-gray-100">
+        <div className="w-full md:w-1/3 lg:w-1/4 p-4">
+          <Sidebar
             points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
-            onAddPoint={handleAddPoint}
-            isAdmin={false}
+            userLocation={userLocation}
+            user={currentUser}
+            onToggleWater={() => setShowWater(!showWater)}
+            onToggleShelter={() => setShowShelter(!showShelter)}
+            onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
+            onTogglePharmacy={() => setShowPharmacy(!showPharmacy)}
+            showWater={showWater}
+            showShelter={showShelter}
+            showSupermarket={showSupermarket}
+            showPharmacy={showPharmacy}
           />
+        </div>
 
-          {/* Point Details or Add Form */}
-          {(selectedPoint || newPointCoords) && (
-            <div className="absolute bottom-4 right-4 w-full max-w-md">
-              {selectedPoint && !newPointCoords && (
-                <PointCard
-                  point={selectedPoint}
-                  routeInfo={routeInfo}
-                  onGetDirections={handleGetDirections}
-                  onClose={() => setSelectedPoint(null)}
-                />
-              )}
+        <div className="md:block md:w-1/3 lg:w-2/4 p-4">
+          <div className="relative h-full rounded-lg overflow-hidden">
+            <CrisisMap
+              points={points}
+              selectedPoint={selectedPoint}
+              onSelectPoint={handleSelectPoint}
+              onAddPoint={handleAddPoint}
+              isAdmin={false}
+            />
 
-              {newPointCoords && (
-                <PointForm
-                  coordinates={newPointCoords}
-                  onSave={handleSavePoint}
-                  onCancel={() => setNewPointCoords(null)}
-                />
-              )}
-            </div>
-          )}
+            {(selectedPoint || newPointCoords) && (
+              <div className="absolute bottom-4 right-4 w-full max-w-md">
+                {selectedPoint && !newPointCoords && (
+                  <PointCard
+                    point={selectedPoint}
+                    routeInfo={routeInfo}
+                    onGetDirections={handleGetDirections}
+                    onClose={() => setSelectedPoint(null)}
+                  />
+                )}
+
+                {newPointCoords && (
+                  <PointForm
+                    coordinates={newPointCoords}
+                    onSave={handleSavePoint}
+                    onCancel={() => setNewPointCoords(null)}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="md:block md:w-1/3 lg:w-1/4 p-4">
+          <Guidance guidanceType={event} />
         </div>
       </div>
 
       <div className="md:block md:w-1/3 lg:w-1/4 p-4">
-        <Guidance guidanceType={event} />
+        <ProfileGuidance profile={profile} />
       </div>
 
       <div className="p-6">
@@ -278,7 +283,7 @@ export default function MapPage() {
             <strong className="block mb-1">⚙️ Storage Debug</strong>
             <div>
               <em>profiles:</em>
-              <pre className="whitespace-pre-wrap">{JSON.stringify(profiles, null, 2)}</pre>
+              <pre className="whitespace-pre-wrap">{JSON.stringify(profile, null, 2)}</pre>
             </div>
             <div>
               <em>events:</em>

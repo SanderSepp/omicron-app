@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
 
-export const type = z.enum(["flood", "earthQuake", "thunderStorm"]);
+export const type = z.enum(["flood", "earthQuake", "thunderStorm", "medications", "allergies", "hasChildren", "dependents"]);
 const guidelines = z.object({
   type: type,
   guides: z.array(z.string()),
@@ -10,7 +10,9 @@ const guidelines = z.object({
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type");
+  const typesParam = searchParams.get("types");
+
+  const types = typesParam ? typesParam.split(",") : [];
 
   const guides: z.infer<typeof guidelines>[] = [
     {
@@ -50,7 +52,39 @@ export async function GET(request: NextRequest) {
         "If you need urgent care please update your status on the APP."
       ]
     },
+    {
+      type: "allergies",
+      guides: [
+        "Review and confirm your list of allergens (e.g., nuts, shellfish, pollen).",
+        "Pack safe snacks/meals that you know are free from your allergens.",
+        "Always carry at least two doses of your emergency medication (epi-pen, antihistamine).",
+        "Set a phone reminder to check labels whenever you’re offered new food.",
+        "Ensure event staff or hosts are aware of your allergy profile in advance."
+      ]
+    },
+    {
+      type: "medications",
+      guides: [
+        "List every daily prescription and OTC medication you take, with dosage times.",
+        "Store a 1–2-day buffer supply plus printed prescriptions or doctor’s note.",
+        "Use alarms or an app to remind you at each dosing time.",
+        "Check storage needs (refrigeration, light sensitivity) and pack accordingly.",
+        "Verify you have backup gear (e.g., inhaler, glucose meter) if needed."
+      ]
+    },
+    {
+      type: "hasChildren",
+      guides: [
+        "Pack age-appropriate snacks, drinks, and any special formula or baby food.",
+        "Include diapers, wipes, a change of clothes, and child-safe sunscreen/bug spray.",
+        "Bring quiet toys, books, or a tablet with headphones for downtime.",
+        "Confirm car-seat/stroller logistics (rental vs. bringing your own).",
+        "Share your child’s routine (nap/meal times) with any caregiver or host."
+      ]
+    }
   ];
 
-  return NextResponse.json(guides.filter(guide => guide.type === type));
+  return NextResponse.json(
+    guides.filter(guide => types.includes(guide.type))
+  );
 }
