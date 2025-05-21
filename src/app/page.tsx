@@ -3,15 +3,15 @@
 
 "use client";
 
-import {samplePoints} from "@/lib/dummy-data";
-import {MapPoint} from "@/lib/types";
-import {useEffect, useState} from "react";
+import { samplePoints } from "@/lib/dummy-data";
+import { MapPoint } from "@/lib/types";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
-import {useAppState} from "@/app/AppContext";
+import { useAppState } from "@/app/AppContext";
 import ProfileGuidance from "@/app/components/profile-guidance";
 
 const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
@@ -171,7 +171,7 @@ export default function MapPage() {
 
   return (
     <div className="">
-      <div className="flex bg-gray-100">
+      <div className="flex bg-gray-100 h-[600px]">
         <div className="p-4">
           <Sidebar
             points={points}
@@ -190,16 +190,16 @@ export default function MapPage() {
           />
         </div>
 
-      <div className="p-4 grow">
-        <div className="relative h-full rounded-lg overflow-hidden">
-          <CrisisMap
-            event={event}
-            points={points}
-            selectedPoint={selectedPoint}
-            onSelectPoint={handleSelectPoint}
-            onAddPoint={handleAddPoint}
-            isAdmin={false}
-          />
+        <div className="p-4 grow">
+          <div className="relative h-full rounded-lg overflow-hidden">
+            <CrisisMap
+              event={event}
+              points={points}
+              selectedPoint={selectedPoint}
+              onSelectPoint={handleSelectPoint}
+              onAddPoint={handleAddPoint}
+              isAdmin={false}
+            />
 
             {(selectedPoint || newPointCoords) && (
               <div className="absolute bottom-4 right-4 w-full max-w-md">
@@ -225,8 +225,8 @@ export default function MapPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-2 p-4">
-          <Guidance guidanceType={event} />
-          <ProfileGuidance profile={profile} />
+        <Guidance guidanceType={event} />
+        <ProfileGuidance profile={profile} />
       </div>
     </div>
   );
