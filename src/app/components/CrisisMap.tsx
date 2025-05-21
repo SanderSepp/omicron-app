@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 import React, {useEffect, useRef, useState} from 'react';
 import {MapPoint, RouteInfo} from '@/lib/types';
 import {getRouteInformation} from '@/lib/map-utils';
@@ -7,8 +10,6 @@ import 'leaflet/dist/leaflet.css';
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import * as ReactDOMServer from 'react-dom/server';
-
-// Import our new components
 import MapInteractions from './map/MapInteractions';
 import ChangeMapView from './map/ChangeMapView';
 import RouteInfoDisplay from './map/RouteInfo';
@@ -30,7 +31,6 @@ interface MapProps {
     event?: any
 }
 
-// Initialize default Leaflet icon
 initializeDefaultIcon();
 
 const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
@@ -49,11 +49,9 @@ const CrisisMap: React.FC<MapProps> = ({
     const [mapCenter, setMapCenter] = useState<[number, number]>([40.7128, -74.0060]); // Default: NYC
     const mapRef = useRef<L.Map | null>(null);
     const routingControlRef = useRef<any>(null);
-    // Tooltip state: { point, position: { x, y } }
     const [tooltip, setTooltip] = useState<{ point: MapPoint; position: { x: number; y: number } } | null>(null);
     const floodedAreaCoords = useFloodedCoords();
 
-    // Get user location
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -70,31 +68,24 @@ const CrisisMap: React.FC<MapProps> = ({
                     setMapCenter(userPos);
                 },
                 () => {
-                    // Handle location error
-                    // This is now handled in MapControls component
                 }
             );
         }
     }, []);
 
-    // Update route when selected point changes (draw route using Leaflet Routing Machine)
     useEffect(() => {
         if (!mapRef.current) return;
-        // Remove previous routing control if exists
         if (routingControlRef.current) {
             routingControlRef.current.remove();
             routingControlRef.current = null;
         }
         if (selectedPoint && userLocation) {
-            // Get route info (for display)
             getRouteInformation(
                 {lat: userLocation[0], lng: userLocation[1]},
                 {lat: selectedPoint.latitude, lng: selectedPoint.longitude}
             ).then(info => {
                 setRouteInfo(info);
             });
-            // Add routing control for walking
-            // @ts-ignore
             const control = L.Routing.control({
                 waypoints: [
                     L.latLng(userLocation[0], userLocation[1]),
@@ -142,10 +133,8 @@ const CrisisMap: React.FC<MapProps> = ({
     useEffect(() => {
         if (!mapRef.current) return;
         const closeTooltip = () => setTooltip(null);
-        // @ts-ignore
         mapRef.current.on('click', closeTooltip);
         return () => {
-            // @ts-ignore
             mapRef.current && mapRef.current.off('click', closeTooltip);
         };
     }, [mapRef.current]);
@@ -161,16 +150,12 @@ const CrisisMap: React.FC<MapProps> = ({
 
     function getCustomIcon(point: MapPoint) {
         let iconEl = null;
-        // @ts-ignore
         if (point.tags && point.tags["amenity"] === "drinking_water") {
             iconEl = <FaTint color="#0074D9" size={24}/>;
-            // @ts-ignore
         } else if (point.tags && point.tags["amenity"] === "pharmacy") {
             iconEl = <FaBookMedical color="#FF0000" size={24}/>;
-            // @ts-ignore
         } else if (point.tags && point.tags["shelter"] === "yes") {
             iconEl = <IoTriangle color="#221C51" size={24}/>;
-            // @ts-ignore
         } else if (point.tags && point.tags["shop"] === "supermarket") {
             iconEl = <FaCartShopping color="#27ae60" size={24}/>;
         }
@@ -194,7 +179,7 @@ const CrisisMap: React.FC<MapProps> = ({
                 <MapContainer
                     center={mapCenter}
                     zoom={13}
-                    style={{height: "500px", width: "100%"}}
+                    style={{height: "100vh", width: "100%"}}
                     className="rounded-lg shadow-md z-0"
                     ref={mapRef}
                 >
@@ -233,24 +218,6 @@ const CrisisMap: React.FC<MapProps> = ({
                             />
                         );
                     })}
-                    {/*{points.map((point) => {*/}
-                    {/*    // const isDrinkingWater = point.tags["amenity"] === "drinking_water";*/}
-                    {/*    // const isBus = point.tags["bus"] === "yes";*/}
-                    {/*    // console.log("isDrinkingWater:", isDrinkingWater);*/}
-                    {/*    // console.log("isBus:", isBus);*/}
-                    {/*    return (*/}
-                    {/*        <Marker*/}
-                    {/*            key={point.id}*/}
-                    {/*            position={[point.latitude, point.longitude]}*/}
-                    {/*            icon={createMarkerIcon(point.id === selectedPoint?.id)}*/}
-                    {/*            eventHandlers={{*/}
-                    {/*                click: () => {*/}
-                    {/*                    handleMarkerClick(point);*/}
-                    {/*                }*/}
-                    {/*            }}*/}
-                    {/*        />*/}
-                    {/*    );*/}
-                    {/*})}*/}
 
                     <MapInteractions onAddPoint={onAddPoint} isAdmin={isAdmin}/>
                     {userLocation && <ChangeMapView coords={userLocation}/>}
