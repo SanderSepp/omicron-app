@@ -20,8 +20,32 @@ export const createNeedHelpUserMarkerIcon = (isSelected: boolean) => {
 };
 
 export const userMarkerIcon = L.divIcon({
-  className: 'user-marker',
-  html: `<div class="w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>`,
+  className: 'user-marker relative',
+  html: `
+    <div class="relative w-4 h-4">
+      <div class="absolute inset-0 rounded-full bg-blue-500 opacity-75 animate-pulse" style="animation: pulse 2s infinite;"></div>
+      <div class="relative w-4 h-4 rounded-full bg-blue-500 border-2 border-white"></div>
+    </div>
+    <style>
+      @keyframes pulse {
+        0% {
+          transform: scale(1.5);
+          opacity: 0.75;
+        }
+        50% {
+          transform: scale(2);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1.5);
+          opacity: 0.75;
+        }
+      }
+      .animate-pulse {
+        animation-timing-function: ease-in-out;
+      }
+    </style>
+  `,
   iconSize: [16, 16],
   iconAnchor: [8, 8]
 });
