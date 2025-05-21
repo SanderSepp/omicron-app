@@ -152,13 +152,13 @@ const CrisisMap: React.FC<MapProps> = ({
 
     function getCustomIcon(point: MapPoint) {
         let iconEl = null;
-        if (point.tags && point.tags["amenity"] === "drinking_water") {
+        if ((point.tags && point.tags["amenity"] === "drinking_water") || (point?.type === "drinking_water")) {
             iconEl = <FaTint color="#0074D9" size={24}/>;
-        } else if (point.tags && point.tags["amenity"] === "pharmacy") {
+        } else if ((point.tags && point.tags["amenity"] === "pharmacy") || (point?.type === "pharmacy")) {
             iconEl = <FaBookMedical color="#FF0000" size={24}/>;
-        } else if (point.tags && point.tags["shelter"] === "yes") {
+        } else if ((point.tags && point.tags["shelter"] === "yes") || (point?.type === "shelter")) {
             iconEl = <IoTriangle color="#221C51" size={24}/>;
-        } else if (point.tags && point.tags["shop"] === "supermarket") {
+        } else if ((point.tags && point.tags["shop"] === "supermarket") || (point?.type === "food_supply")) {
             iconEl = <FaCartShopping color="#27ae60" size={24}/>;
         }
 
@@ -190,21 +190,21 @@ const CrisisMap: React.FC<MapProps> = ({
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {event === "flood" && valenciaFloodedPolygons && valenciaFloodedPolygons.map((poly, idx) => (
+                    {event === "flood" && valenciaFloodedPolygons?.map((poly, idx) => (
                         <Polygon
                             key={poly.name}
                             positions={poly.coords}
-                            pathOptions={{ color: "red", fillOpacity: 0.4 }}
+                            pathOptions={{color: "red", fillOpacity: 0.4}}
                         >
                             <Popup>{poly.name}</Popup>
                         </Polygon>
                     ))}
 
-                    {event === "potentialFlooding" && valenciaPotentialFloodPolygons && valenciaPotentialFloodPolygons.map((poly, idx) => (
+                    {event === "potentialFlooding" && valenciaPotentialFloodPolygons?.map((poly, idx) => (
                         <Polygon
                             key={poly.name}
                             positions={poly.coords}
-                            pathOptions={{ color: "orange", fillOpacity: 0.4 }}
+                            pathOptions={{color: "orange", fillOpacity: 0.4}}
                         >
                             <Popup>{poly.name}</Popup>
                         </Polygon>

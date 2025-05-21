@@ -3,22 +3,22 @@
 
 "use client";
 
-import { samplePoints } from "@/lib/dummy-data";
-import { MapPoint } from "@/lib/types";
-import { useEffect, useState } from "react";
+import {MapPoint} from "@/lib/types";
+import {useEffect, useState} from "react";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
-import { useAppState } from "@/app/AppContext";
+import {useAppState} from "@/app/AppContext";
 import ProfileGuidance from "@/app/components/profile-guidance";
+import {useValenciaResourceMapPoints} from "@/hooks/useValenciaResourcePointsDuringFlooding";
 
 const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
 const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
 
 export default function MapPage() {
-  const [points, setPoints] = useState<MapPoint[]>(samplePoints);
+  const [points, setPoints] = useState<MapPoint[]>();
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
   const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -29,6 +29,7 @@ export default function MapPage() {
   const [showSupermarket, setShowSupermarket] = useState(true);
   const [showPharmacy, setShowPharmacy] = useState(true);
   const [currentWeather, setCurrentWeather] = useState(true);
+  const valenciaResourcePoints = useValenciaResourceMapPoints();
 
   const { event, setEvent } = useAppState();
 
@@ -106,6 +107,12 @@ export default function MapPage() {
         }
       });
 
+
+      if (event === 'flood') {
+        setPoints(valenciaResourcePoints)
+        setLoading(false);
+        return;
+      }
       setPoints(list)
     } catch (error) {
       console.error('Error fetching survival data:', error);
@@ -167,6 +174,41 @@ export default function MapPage() {
       <p>Loading...</p></div>
   }
 
+  function menuSetWater() {
+    setShowWater(true)
+    setShowShelter(false)
+    setShowPharmacy(false)
+    setShowSupermarket(false)
+  }
+
+  function menuSetShelter() {
+    setShowWater(false)
+    setShowShelter(true)
+    setShowPharmacy(false)
+    setShowSupermarket(false)
+  }
+
+  function menuSetFood() {
+    setShowWater(false)
+    setShowShelter(false)
+    setShowPharmacy(false)
+    setShowSupermarket(true)
+  }
+
+  function menuSetPharmacy() {
+    setShowWater(false)
+    setShowShelter(false)
+    setShowPharmacy(true)
+    setShowSupermarket(false)
+  }
+
+  function menuSetAll() {
+    setShowWater(true)
+    setShowShelter(true)
+    setShowPharmacy(true)
+    setShowSupermarket(true)
+  }
+
   return (
     <div className="">
       <div className="flex bg-gray-100 h-[600px]">
@@ -182,10 +224,11 @@ export default function MapPage() {
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}
             user={null}
-            onToggleWater={() => setShowWater(!showWater)}
-            onToggleShelter={() => setShowShelter(!showShelter)}
-            onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
-            onTogglePharmacy={() => setShowPharmacy(!showPharmacy)}
+            onMenuWater={() => menuSetWater()}
+            onMenuShelter={() => menuSetShelter()}
+            onMenuSupermarket={() => menuSetFood()}
+            onMenuPharmacy={() => menuSetPharmacy()}
+            onMenuAll={() => menuSetAll()}
             showWater={showWater}
             showShelter={showShelter}
             showSupermarket={showSupermarket}

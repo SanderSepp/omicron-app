@@ -13,10 +13,11 @@ interface SidebarProps {
     onSelectPoint: (point: MapPoint) => void,
     userLocation: MapPoint | null,
     user: { name: string; isAdmin: boolean } | null,
-    onToggleWater?: () => void,
-    onToggleShelter?: () => void,
-    onToggleSupermarket?: () => void,
-    onTogglePharmacy?: () => void,
+    onMenuWater?: () => void,
+    onMenuShelter?: () => void,
+    onMenuSupermarket?: () => void,
+    onMenuPharmacy?: () => void,
+    onMenuAll?: () => void,
     showWater?: boolean,
     showShelter?: boolean,
     showSupermarket?: boolean,
@@ -29,10 +30,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                                              onSelectPoint,
                                              userLocation,
                                              user,
-                                             onToggleWater,
-                                             onToggleShelter,
-                                             onToggleSupermarket,
-                                             onTogglePharmacy,
+                                             onMenuWater,
+                                             onMenuShelter,
+                                             onMenuSupermarket,
+                                             onMenuPharmacy,
+                                             onMenuAll,
                                              showWater,
                                              showShelter,
                                              showSupermarket,
@@ -63,6 +65,10 @@ const Sidebar: React.FC<SidebarProps> = ({
         return 0;
     });
 
+    function allToggled() {
+        return showPharmacy && showWater && showShelter && showSupermarket;
+    }
+
     return (
         <div className="flex flex-col h-125 bg-white rounded-lg shadow-md">
             <div className="p-4">
@@ -80,10 +86,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                     />
                 </div>
                 <div style={{ display: 'flex', gap: '2px' }}>
-                    <Button onClick={onToggleSupermarket} style={{ background: !showSupermarket ? 'gray' : '' }}>Food</Button>
-                    <Button onClick={onToggleWater} style={{ background: !showWater ? 'gray' : '' }}>Water</Button>
-                    <Button onClick={onToggleShelter} style={{ background: !showShelter ? 'gray' : '' }}>Shelter</Button>
-                    <Button onClick={onTogglePharmacy} style={{ background: !showPharmacy ? 'gray' : '' }}>Pharmacy</Button>
+                    <Button onClick={onMenuSupermarket} style={{ background: !showSupermarket ? 'gray' : '' }}>Food</Button>
+                    <Button onClick={onMenuWater} style={{ background: !showWater ? 'gray' : '' }}>Water</Button>
+                    <Button onClick={onMenuShelter} style={{ background: !showShelter ? 'gray' : '' }}>Shelter</Button>
+                    <Button onClick={onMenuPharmacy} style={{ background: !showPharmacy ? 'gray' : '' }}>Pharmacy</Button>
+                    <Button onClick={onMenuAll} style={{ background: !allToggled() ? 'gray' : '' }}>All</Button>
                 </div>
 
                 {user?.isAdmin && (
