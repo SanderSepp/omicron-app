@@ -120,6 +120,7 @@ export default function MapPage() {
       setPoints(list)
     } catch (error) {
       console.error('Error fetching survival data:', error);
+      setPoints([]);
     } finally {
       setLoading(false);
     }
