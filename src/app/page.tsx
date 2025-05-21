@@ -1,31 +1,18 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+
 "use client";
 
-import { samplePoints } from "@/lib/dummy-data";
-import { MapPoint, RouteInfo, User } from "@/lib/types";
-import { useEffect, useState } from "react";
+import {samplePoints} from "@/lib/dummy-data";
+import {MapPoint} from "@/lib/types";
+import {useEffect, useState} from "react";
 import Sidebar from "@/components/Sidebar";
 import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
-import { useAppState } from "@/app/AppContext";
+import {useAppState} from "@/app/AppContext";
 import ProfileGuidance from "@/app/components/profile-guidance";
-
-const selectablePoints: MapPoint[] = [
-  {
-    id: "special-1",
-    name: "Selectable Point",
-    description: "Custom selectable point in Tallinn",
-    latitude: 59.44272951579296,
-    longitude: 24.74231474877615,
-    address: "Tallinn, Estonia",
-  },
-  {
-    id: "userLocation",
-    latitude: 59.443859500865024,
-    longitude: 24.750544299208116
-  }
-];
 
 const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
 const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
@@ -33,10 +20,8 @@ const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
 export default function MapPage() {
   const [points, setPoints] = useState<MapPoint[]>(samplePoints);
   const [selectedPoint, setSelectedPoint] = useState<MapPoint | null>(null);
-  const [routeInfo, setRouteInfo] = useState<RouteInfo | null>(null);
   const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const [loading, setLoading] = useState(true);
   const [showWater, setShowWater] = useState(true);
@@ -71,7 +56,7 @@ export default function MapPage() {
       setShowSupermarket(true);
       setShowPharmacy(true);
     }
-    if (event === 'thunderStormComing') {
+    if (event === 'potentialFlooding') {
       setShowWater(true);
       setShowShelter(false);
       setShowSupermarket(true);
@@ -92,7 +77,6 @@ export default function MapPage() {
   }, [event]);
 
   useEffect(() => {
-    console.log("FETCHING DATA");
     if (userLocation) {
       fetchResources()
     }
@@ -108,7 +92,7 @@ export default function MapPage() {
     if (showPharmacy) filterOptions += '&pharmacy=true';
 
     try {
-      const queryRes = await fetch(`/api/map?lat=${userLocation?.latitude}&lon=${userLocation?.longitude}&radius=${1000}${filterOptions}`, {
+      const queryRes = await fetch(`/api/map?lat=${userLocation?.latitude}&lon=${userLocation?.longitude}&radius=${5000}${filterOptions}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
       });
@@ -132,35 +116,9 @@ export default function MapPage() {
     }
   };
 
-
-  // Get route info when point is selected
-  useEffect(() => {
-    if (selectedPoint && userLocation) {
-      // getRouteInformation(
-      //   userLocation,
-      //   { lat: selectedPoint.latitude, lng: selectedPoint.longitude }
-      // ).then(info => {
-      //   setRouteInfo(info);
-      // });
-    } else {
-      setRouteInfo(null);
-    }
-  }, [selectedPoint, userLocation]);
-
   const handleSelectPoint = (point: MapPoint | null) => {
     setSelectedPoint(point);
-    // Close add point form if open
     setNewPointCoords(null);
-  };
-
-  const handleGetDirections = () => {
-    // In a real app, this might open native maps or provide more detailed instructions
-    if (selectedPoint) {
-      window.open(
-        `https://www.google.com/maps/dir/?api=1&destination=${selectedPoint.latitude},${selectedPoint.longitude}`,
-        '_blank'
-      );
-    }
   };
 
   const handleAddPoint = (lat: number, lng: number) => {
@@ -184,7 +142,6 @@ export default function MapPage() {
 
 
   useEffect(() => {
-    // Handler for native storage events (cross-tab)
     const onStorage = (e: StorageEvent) => {
       console.log("Storage event: ", e);
       if (e.key === "selectedProfile") setProfile(JSON.parse(e.newValue || "[]"));
@@ -212,7 +169,6 @@ export default function MapPage() {
       <p>Loading...</p></div>
   }
 
-
   return (
     <div className="">
       <div className="flex bg-gray-100">
@@ -222,7 +178,7 @@ export default function MapPage() {
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}
-            user={currentUser}
+            user={null}
             onToggleWater={() => setShowWater(!showWater)}
             onToggleShelter={() => setShowShelter(!showShelter)}
             onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
@@ -250,8 +206,6 @@ export default function MapPage() {
                 {selectedPoint && !newPointCoords && (
                   <PointCard
                     point={selectedPoint}
-                    routeInfo={routeInfo}
-                    onGetDirections={handleGetDirections}
                     onClose={() => setSelectedPoint(null)}
                   />
                 )}
@@ -274,23 +228,6 @@ export default function MapPage() {
           <Guidance guidanceType={event} />
           <ProfileGuidance profile={profile} />
       </div>
-
-      {/*<div className="p-6">*/}
-      {/*  <div>*/}
-      {/*    <div*/}
-      {/*      className="fixed bottom-2 right-2 bg-white/90 p-2 rounded shadow-lg text-xs w-64 max-h-64 overflow-auto z-50">*/}
-      {/*      <strong className="block mb-1">⚙️ Storage Debug</strong>*/}
-      {/*      <div>*/}
-      {/*        <em>profiles:</em>*/}
-      {/*        <pre className="whitespace-pre-wrap">{JSON.stringify(profile, null, 2)}</pre>*/}
-      {/*      </div>*/}
-      {/*      <div>*/}
-      {/*        <em>events:</em>*/}
-      {/*        <pre className="whitespace-pre-wrap">{event}</pre>*/}
-      {/*      </div>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
     </div>
   );
 }

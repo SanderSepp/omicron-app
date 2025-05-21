@@ -7,7 +7,7 @@ export interface MapPoint {
   longitude: number;
   address?: string;
   instructions?: string;
-  tags?: string[]
+  tags?: any[]
 }
 
 export interface User {

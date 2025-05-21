@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { z } from "zod";
 
-export const type = z.enum(["flood", "earthQuake", "thunderStorm", "medications", "allergies", "hasChildren", "dependents"]);
+export const type = z.enum(["flood", "earthQuake", "potentialFlooding", "medications", "allergies", "hasChildren", "dependents", 'calm']);
 const guidelines = z.object({
   type: type,
   guides: z.array(z.string()),
@@ -16,6 +16,12 @@ export async function GET(request: NextRequest) {
 
   const guides: z.infer<typeof guidelines>[] = [
     {
+      type: "calm", guides: [
+        "Move to higher ground immediately and avoid low-lying areas.",
+        "Do not walk, swim, or drive through floodwaters; just six inches of moving water can knock you down.",
+      ]
+    },
+    {
       type: "flood", guides: [
         "Move to higher ground immediately and avoid low-lying areas.",
         "Do not walk, swim, or drive through floodwaters; just six inches of moving water can knock you down.",
@@ -28,19 +34,7 @@ export async function GET(request: NextRequest) {
       ]
     },
     {
-      type: "earthQuake", guides: [
-        "Drop to your hands and knees, cover your head and neck under sturdy furniture, and hold on until the shaking stops.",
-        "Stay indoors and away from windows, mirrors, and heavy furniture that might topple.",
-        "If you're outdoors, move away from buildings, streetlights, and utility wires.",
-        "Do not use elevators during or after the quake.",
-        "After the shaking stops, check yourself and others for injuries and provide first aid if needed.",
-        "Be prepared for aftershocks, which are common after a major quake.",
-        "Inspect your home for structural damage, gas leaks, or electrical issues.",
-        "Use text messages or social media to communicate with loved ones to keep emergency lines free."
-      ]
-    },
-    {
-      type: "thunderStorm",
+      type: "potentialFlooding",
       guides: [
         "Stay indoors and avoid contact with water – do not bathe or shower.",
         "Unplug electrical appliances and avoid using corded phones.",

@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 "use client";
 
 import Link from "next/link";
@@ -41,7 +43,7 @@ function setEventToLocalStorage(event: z.infer<typeof type>) {
 }
 
 export function NavBar() {
-  const { event, setEvent } = useAppState();
+  const { setEvent } = useAppState();
 
   return (
       <nav className="bg-white shadow">
@@ -57,13 +59,13 @@ export function NavBar() {
                 </Link>
               </NavigationMenuItem>
 
-              <NavigationMenuItem>
-                <Link href="/live-updates" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Live Updates
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
+              {/*<NavigationMenuItem>*/}
+              {/*  <Link href="/live-updates" passHref>*/}
+              {/*    <NavigationMenuLink className={navigationMenuTriggerStyle()}>*/}
+              {/*      Live Updates*/}
+              {/*    </NavigationMenuLink>*/}
+              {/*  </Link>*/}
+              {/*</NavigationMenuItem>*/}
 
               <NavigationMenuItem>
                 <Link href="/profile" passHref>
@@ -72,21 +74,13 @@ export function NavBar() {
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/guidance" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Guidance
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/notifications" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Notifications
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-
+              {/*<NavigationMenuItem>*/}
+              {/*  <Link href="/guidance" passHref>*/}
+              {/*    <NavigationMenuLink className={navigationMenuTriggerStyle()}>*/}
+              {/*      Guidance*/}
+              {/*    </NavigationMenuLink>*/}
+              {/*  </Link>*/}
+              {/*</NavigationMenuItem>*/}
             </NavigationMenuList>
             <NavigationMenuViewport />
           </NavigationMenu>
@@ -97,35 +91,26 @@ export function NavBar() {
                 setEvent("calm")
               }}
             >
-              1: Everything is calm
+              1: EVENT: CALM
             </Button>
 
             <Button
               onClick={() => {
-                showNotification('⚠️ Weather Alert', 'Storm is coming', "http://localhost:3000/live-updates");
-                setEventToLocalStorage("thunderStorm")
-                setEvent("thunderStormComing")
+                showNotification('⚠️ Weather Alert', 'Heavy rainfall in mountains - potential flooding in your area in next 24h!', "http://localhost:3000/");
+                setEventToLocalStorage("potentialFlooding")
+                setEvent("potentialFlooding")
               }}
             >
-              2: Storm is coming
+              2: EVENT: POTENTIAL FLOODING
             </Button>
             <Button
               onClick={() => {
-                showNotification('⚠️ Weather Alert', 'Storm here!', "http://localhost:3000/");
-                setEvent("thunderStorm")
-              }}
-            >
-              3: Storm here
-            </Button>
-            <Button
-              onClick={() => {
-                showNotification('ℹ️ FLOOD', 'FLOOD', "http://localhost:3000/");
+                showNotification('ℹ️ FLOOD', 'Heavy flooding in your area', "http://localhost:3000/");
                 setEventToLocalStorage("flood")
                 setEvent("flood")
-              }
-              }
+              }}
             >
-              4: Flood
+              3: EVENT: FLOODING
             </Button>
           </div>
         </div>
