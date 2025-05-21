@@ -4,6 +4,7 @@ import React from "react";
 import { FiCloudRain } from "react-icons/fi";
 import { FaWater } from "react-icons/fa";
 import { LuPartyPopper } from "react-icons/lu";
+import { GuidelineType } from "@/app/api/openai/route";
 
 type EventMetaKey = "flood" | "potentialFlooding" | "calm";
 
@@ -66,22 +67,22 @@ export default function Guidance({ guidanceType }: Props) {
     <>
       {Array.isArray(data) && data.length > 0 && (
         <>
-          {data.map((entry: { type: string; guides: string[] }) => (
+          {data.map((entry: GuidelineType) => (
             <Card
               key={entry.type}
               className={`
               border-2 ${borderClass} ${bgClass}
             `}
             >
-              <CardHeader className={`flex items-center pb-2 ${textClass}`}>
+              <CardHeader className={`flex justify-center items-center pb-2 ${textClass}`}>
                 <span className="mr-2">{icon}</span>
-                <CardTitle className="text-lg font-semibold">{entry.type.toUpperCase()}</CardTitle>
+                <CardTitle className="text-2xl font-semibold">{entry.title}</CardTitle>
               </CardHeader>
               <CardContent className="leading-relaxed">
                 {entry.guides.map((guide, idx) => (
-                  <div key={idx} className="flex items-center space-x-2">
-                    <span className="text-md text-gray-800">•</span>
-                    <p className="text-md text-gray-800">{guide}</p>
+                  <div key={idx} className="flex items-center space-x-2 font-semibold">
+                    <span className="text-lg text-gray-800">•</span>
+                    <p className="text-lg text-gray-800">{guide}</p>
                   </div>
                 ))}
               </CardContent>

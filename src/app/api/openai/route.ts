@@ -3,11 +3,13 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 export const type = z.enum(["flood", "potentialFlooding", "medications", "allergies", "hasChildren", "dependents", 'calm']);
-export type AlertType = z.infer<typeof type>;
-const guidelines = z.object({
+const guideline = z.object({
   type: type,
+  title: z.string(),
   guides: z.array(z.string()),
 });
+export type AlertType = z.infer<typeof type>;
+export type GuidelineType = z.infer<typeof guideline>;
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -15,31 +17,36 @@ export async function GET(request: NextRequest) {
 
   const types = typesParam ? typesParam.split(",") : [];
 
-  const guides: z.infer<typeof guidelines>[] = [
+  const guides: z.infer<typeof guideline>[] = [
     {
-      type: "calm", guides: [
-        "Assamble a personalized waterproof emergency kit:diabetes medication, insulin, testersallergy medications grandmother´s medication",
+      type: "calm",
+      title: "You are safe!",
+      guides: [
+        "Assemble a personalized waterproof emergency kit: diabetes medication, insulin testers, allergy medications grandmother´s medication",
         "Develop an accessible evacuation plan wheelchair accessible routes and shelters",
         "Stay Informed and Ready"
       ]
     },
     {
-      type: "flood", guides: [
+      type: "flood",
+      title: "Flooding!",
+      guides: [
         "Stay indoors and avoid water contact",
         "Unplug electrical appliances",
         "Avoid driving",
-        "Check your blood sugar condition regulary",
-        "Check your grandmother´s health regulary"
+        "Check your blood sugar condition regularly",
+        "Check your grandmother´s health regularly"
       ]
     },
     {
       type: "potentialFlooding",
+      title: "It's raining cats and dogs",
       guides: [
         "Crab your emergency kit",
         "Move to higher ground immediately",
         "Pick wheelchair accessible routes",
         "Avoid floodwaters",
-        "Stay informed and follow official Instructions"
+        "Stay informed and follow official instructions"
       ]
     },
   ];

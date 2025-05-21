@@ -13,6 +13,7 @@ import Guidance from "@/app/components/guidance";
 import {useAppState} from "@/app/AppContext";
 import ProfileGuidance from "@/app/components/profile-guidance";
 import {useValenciaResourceMapPoints} from "@/hooks/useValenciaResourcePointsDuringFlooding";
+import { cn } from "@/lib/utils"
 
 const CrisisMap = dynamic(() => import("@/app/components/CrisisMap"), {
   ssr: false,
@@ -218,9 +219,17 @@ export default function MapPage() {
     <div className="">
       <div className="flex bg-gray-100 h-[600px]">
         <div className="p-4 flex flex-col gap-1">
-          <div className="flex flex-col bg-white rounded-lg shadow-md border">
+          <div className={cn("flex flex-col bg-white rounded-lg shadow-md border", {
+            "border-red-600 bg-red-100": event === 'flood',
+            "border-amber-600 bg-amber-100": event === 'potentialFlooding',
+            "border-green-600 bg-green-100": event === 'calm'
+          })}>
             <div className="p-4">
-              <h2 className="text-xl font-bold bord">Current weather: {currentWeather}</h2>
+              <h2 className={cn("text-xl font-bold", {
+                "text-red-600": event === 'flood',
+                "text-amber-600": event === 'potentialFlooding',
+                "text-green-600": event === 'calm'
+              })}>Current weather: {currentWeather}</h2>
             </div>
           </div>
           <Sidebar
@@ -241,7 +250,7 @@ export default function MapPage() {
           />
         </div>
 
-        <div className="p-4 grow">
+        <div className="p-4 grow shrink-0">
           <div className="relative h-full rounded-lg overflow-hidden">
             <CrisisMap
               event={event}
