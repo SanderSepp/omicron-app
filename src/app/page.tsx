@@ -174,6 +174,41 @@ export default function MapPage() {
       <p>Loading...</p></div>
   }
 
+  function menuSetWater() {
+    setShowWater(true)
+    setShowShelter(false)
+    setShowPharmacy(false)
+    setShowSupermarket(false)
+  }
+
+  function menuSetShelter() {
+    setShowWater(false)
+    setShowShelter(true)
+    setShowPharmacy(false)
+    setShowSupermarket(false)
+  }
+
+  function menuSetFood() {
+    setShowWater(false)
+    setShowShelter(false)
+    setShowPharmacy(false)
+    setShowSupermarket(true)
+  }
+
+  function menuSetPharmacy() {
+    setShowWater(false)
+    setShowShelter(false)
+    setShowPharmacy(true)
+    setShowSupermarket(false)
+  }
+
+  function menuSetAll() {
+    setShowWater(true)
+    setShowShelter(true)
+    setShowPharmacy(true)
+    setShowSupermarket(true)
+  }
+
   return (
     <div className="">
       <div className="flex bg-gray-100 h-[600px]">
@@ -189,10 +224,11 @@ export default function MapPage() {
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}
             user={null}
-            onToggleWater={() => setShowWater(!showWater)}
-            onToggleShelter={() => setShowShelter(!showShelter)}
-            onToggleSupermarket={() => setShowSupermarket(!showSupermarket)}
-            onTogglePharmacy={() => setShowPharmacy(!showPharmacy)}
+            onMenuWater={() => menuSetWater()}
+            onMenuShelter={() => menuSetShelter()}
+            onMenuSupermarket={() => menuSetFood()}
+            onMenuPharmacy={() => menuSetPharmacy()}
+            onMenuAll={() => menuSetAll()}
             showWater={showWater}
             showShelter={showShelter}
             showSupermarket={showSupermarket}
