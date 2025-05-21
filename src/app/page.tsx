@@ -28,6 +28,7 @@ export default function MapPage() {
   const [showShelter, setShowShelter] = useState(true);
   const [showSupermarket, setShowSupermarket] = useState(true);
   const [showPharmacy, setShowPharmacy] = useState(true);
+  const [currentWeather, setCurrentWeather] = useState(true);
 
   const { event, setEvent } = useAppState();
 
@@ -55,24 +56,21 @@ export default function MapPage() {
       setShowShelter(true);
       setShowSupermarket(true);
       setShowPharmacy(true);
+      setCurrentWeather("Sunny")
     }
     if (event === 'potentialFlooding') {
       setShowWater(true);
       setShowShelter(false);
       setShowSupermarket(true);
       setShowPharmacy(true);
-    }
-    if (event === 'thunderStorm') {
-      setShowWater(false);
-      setShowShelter(true);
-      setShowSupermarket(false);
-      setShowPharmacy(false);
+      setCurrentWeather("Potential flooding in 24h")
     }
     if (event === 'flood') {
       setShowWater(false);
       setShowShelter(true);
       setShowSupermarket(false);
       setShowPharmacy(false);
+      setCurrentWeather("Flooding")
     }
   }, [event]);
 
@@ -172,9 +170,14 @@ export default function MapPage() {
   return (
     <div className="">
       <div className="flex bg-gray-100 h-[600px]">
-        <div className="p-4">
+        <div className="p-4 flex flex-col gap-1">
+          <div className="flex flex-col bg-white rounded-lg shadow-md border">
+            <div className="p-4">
+              <h2 className="text-xl font-bold bord">Current weather: {currentWeather}</h2>
+            </div>
+          </div>
           <Sidebar
-            points={points}
+              points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}

@@ -91,7 +91,7 @@ export function NavBar() {
                 setEvent("calm")
               }}
             >
-              1: EVENT: CALM
+              EVENT: CALM
             </Button>
 
             <Button
@@ -101,7 +101,7 @@ export function NavBar() {
                 setEvent("potentialFlooding")
               }}
             >
-              2: EVENT: POTENTIAL FLOODING
+              EVENT: POTENTIAL FLOODING
             </Button>
             <Button
               onClick={() => {
@@ -110,7 +110,7 @@ export function NavBar() {
                 setEvent("flood")
               }}
             >
-              3: EVENT: FLOODING
+              EVENT: FLOODING
             </Button>
           </div>
         </div>
