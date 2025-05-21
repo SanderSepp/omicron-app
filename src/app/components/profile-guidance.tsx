@@ -15,6 +15,7 @@ const keysToCheck = [
 ] as const;
 
 function collectPresentKeys(p: UserProfile) {
+  if (!p) return [];
   return keysToCheck.filter((key) => {
     const val = p[key];
     if (Array.isArray(val)) {
@@ -39,9 +40,9 @@ export default function ProfileGuidance({ profile }: Props) {
     }
   });
   return (
-    <div className="space-y-6">
+    <>
       {Array.isArray(data) && data.length > 0 && (
-        <div className="space-y-6">
+        <>
           {data.map((entry: { type: string; guides: string[] }) => (
             <Card key={entry.type}>
               <CardHeader>
@@ -57,8 +58,8 @@ export default function ProfileGuidance({ profile }: Props) {
               </CardContent>
             </Card>
           ))}
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 }

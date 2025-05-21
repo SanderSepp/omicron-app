@@ -26,7 +26,7 @@ export default function Guidance({ guidanceType }: Props) {
   }
 
   return (
-    <div className="space-y-6">
+    <div>
       {Array.isArray(data) && data.length > 0 && (
         <div className="space-y-6">
           {data.map((entry: { type: string; guides: string[] }) => (

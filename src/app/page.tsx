@@ -37,9 +37,6 @@ export default function MapPage() {
   const [userLocation, setUserLocation] = useState<MapPoint | null>(null);
   const [newPointCoords, setNewPointCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [from, setFrom] = useState<MapPoint>(selectablePoints[1]);
-  const [to, setTo] = useState<MapPoint>(selectablePoints[0]);
 
   const [loading, setLoading] = useState(true);
   const [showWater, setShowWater] = useState(true);
@@ -218,8 +215,8 @@ export default function MapPage() {
 
   return (
     <div className="">
-      <div className="flex-row md:flex h-screen bg-gray-100">
-        <div className="w-full md:w-1/3 lg:w-1/4 p-4">
+      <div className="flex bg-gray-100">
+        <div className="p-4">
           <Sidebar
             points={points}
             selectedPoint={selectedPoint}
@@ -237,7 +234,7 @@ export default function MapPage() {
           />
         </div>
 
-      <div className="md:block md:w-1/3 lg:w-2/4 p-4">
+      <div className="p-4 grow">
         <div className="relative h-full rounded-lg overflow-hidden">
           <CrisisMap
             event={event}
@@ -271,31 +268,29 @@ export default function MapPage() {
           </div>
         </div>
 
-        <div className="md:block md:w-1/3 lg:w-1/4 p-4">
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 p-4">
           <Guidance guidanceType={event} />
-        </div>
+          <ProfileGuidance profile={profile} />
       </div>
 
-      <div className="md:block md:w-1/3 lg:w-1/4 p-4">
-        <ProfileGuidance profile={profile} />
-      </div>
-
-      <div className="p-6">
-        <div>
-          <div
-            className="fixed bottom-2 right-2 bg-white/90 p-2 rounded shadow-lg text-xs w-64 max-h-64 overflow-auto z-50">
-            <strong className="block mb-1">⚙️ Storage Debug</strong>
-            <div>
-              <em>profiles:</em>
-              <pre className="whitespace-pre-wrap">{JSON.stringify(profile, null, 2)}</pre>
-            </div>
-            <div>
-              <em>events:</em>
-              <pre className="whitespace-pre-wrap">{event}</pre>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/*<div className="p-6">*/}
+      {/*  <div>*/}
+      {/*    <div*/}
+      {/*      className="fixed bottom-2 right-2 bg-white/90 p-2 rounded shadow-lg text-xs w-64 max-h-64 overflow-auto z-50">*/}
+      {/*      <strong className="block mb-1">⚙️ Storage Debug</strong>*/}
+      {/*      <div>*/}
+      {/*        <em>profiles:</em>*/}
+      {/*        <pre className="whitespace-pre-wrap">{JSON.stringify(profile, null, 2)}</pre>*/}
+      {/*      </div>*/}
+      {/*      <div>*/}
+      {/*        <em>events:</em>*/}
+      {/*        <pre className="whitespace-pre-wrap">{event}</pre>*/}
+      {/*      </div>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </div>
   );
 }

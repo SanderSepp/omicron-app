@@ -25,6 +25,7 @@ function showNotification(title: string, body: string, url?: string) {
       body,
       // icon: '/icons/alert.png', // ← optional
     })
+    alert(title + " " + body)
     if (url) {
       notif.onclick = () => {
         window.open(url, '_self')
