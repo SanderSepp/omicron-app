@@ -106,6 +106,13 @@ export default function MapPage() {
         }
       });
 
+
+      if (event === 'flood') {
+        // TODO - ROBIN
+        setPoints([])
+        setLoading(false);
+        return;
+      }
       setPoints(list)
     } catch (error) {
       console.error('Error fetching survival data:', error);
