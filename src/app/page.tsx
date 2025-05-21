@@ -112,9 +112,15 @@ export default function MapPage() {
         }
       });
 
-
       if (event === 'flood') {
-        setPoints(valenciaResourcePoints)
+        let pointsToShow = valenciaResourcePoints;
+        if (showWater) pointsToShow = pointsToShow?.filter(point => point.type === 'drinking_water');
+        if (showShelter) pointsToShow = pointsToShow?.filter(point => point.type === 'shelter');
+        if (showSupermarket) pointsToShow = pointsToShow?.filter(point => point.type === 'food_supply');
+        if (showPharmacy) pointsToShow = [];
+        if (showWater && showShelter && showSupermarket && showPharmacy) pointsToShow = valenciaResourcePoints;
+
+        setPoints(pointsToShow)
         setLoading(false);
         return;
       }
@@ -232,8 +238,7 @@ export default function MapPage() {
               })}>Current weather: {currentWeather}</h2>
             </div>
           </div>
-          <Sidebar
-              points={points}
+          <Sidebar points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}
