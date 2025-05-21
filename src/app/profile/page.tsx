@@ -34,7 +34,7 @@ const defaultProfiles: UserProfile[] = [
     medications: ["Ibuprofen", "Metformin"],
     allergies: ["Peanuts", "Penicillin"],
     emergencyContact: { name: "Jane Doe", relation: "Wife", phone: "+123456789" },
-    conditions: ["Hypertension", "Asthma"],
+    conditions: ["Hypertension", "Asthma", "Wheelchair"],
   },
   {
     name: "No Medications",
