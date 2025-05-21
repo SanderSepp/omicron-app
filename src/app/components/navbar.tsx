@@ -52,11 +52,11 @@ export function NavBar() {
             <NavigationMenuList>
 
               <NavigationMenuItem>
-                <Link href="/" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/">
                     Crisis Map
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
 
               {/*<NavigationMenuItem>*/}
@@ -68,11 +68,11 @@ export function NavBar() {
               {/*</NavigationMenuItem>*/}
 
               <NavigationMenuItem>
-                <Link href="/profile" passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                  <Link href="/profile">
                     Profile
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
               {/*<NavigationMenuItem>*/}
               {/*  <Link href="/guidance" passHref>*/}
