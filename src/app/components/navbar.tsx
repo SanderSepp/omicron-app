@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { z } from "zod";
-import { type } from "@/app/api/openai/route";
+import { AlertType } from "@/app/api/openai/route";
 import {useAppState} from "@/app/AppContext";
 
 function showNotification(title: string, body: string, url?: string) {
@@ -38,7 +38,7 @@ function showNotification(title: string, body: string, url?: string) {
   }
 }
 
-function setEventToLocalStorage(event: z.infer<typeof type>) {
+function setEventToLocalStorage(event: z.infer<typeof AlertType>) {
   localStorage.setItem('event', event)
 }
 

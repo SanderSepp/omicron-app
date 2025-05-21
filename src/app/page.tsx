@@ -227,9 +227,13 @@ export default function MapPage() {
 
       </div>
 
-      <div className="grid grid-cols-3 gap-2 p-4">
+      <div className="p-4">
         <Guidance guidanceType={event} />
-        <ProfileGuidance profile={profile} />
+        <div className="grid grid-cols-2 gap-2 ">
+          <div>
+            <ProfileGuidance profile={profile} />
+          </div>
+        </div>
       </div>
     </div>
   );
