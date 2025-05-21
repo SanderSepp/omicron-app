@@ -17,10 +17,11 @@ import MapControls from './map/MapControls';
 import {createMarkerIcon, initializeDefaultIcon, userMarkerIcon} from './map/MarkerIcons';
 
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
-import {useFloodedCoords} from "@/hooks/useFloodedCoordinates";
 import {FaBookMedical, FaTint} from "react-icons/fa";
 import {FaCartShopping} from "react-icons/fa6";
 import {IoTriangle} from "react-icons/io5";
+import {useValenciaPotentialFloodPolygons} from "@/hooks/useValenciaPotentialFloodPolygons";
+import {useValenciaFloodedPolygons} from "@/hooks/useValenciaFloodedPolygons";
 
 interface MapProps {
     points: MapPoint[],
@@ -50,7 +51,8 @@ const CrisisMap: React.FC<MapProps> = ({
     const mapRef = useRef<L.Map | null>(null);
     const routingControlRef = useRef<any>(null);
     const [tooltip, setTooltip] = useState<{ point: MapPoint; position: { x: number; y: number } } | null>(null);
-    const floodedAreaCoords = useFloodedCoords();
+    const valenciaPotentialFloodPolygons = useValenciaPotentialFloodPolygons();
+    const valenciaFloodedPolygons = useValenciaFloodedPolygons();
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -188,12 +190,24 @@ const CrisisMap: React.FC<MapProps> = ({
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
 
-                    {event === "flood" && floodedAreaCoords && floodedAreaCoords.map((poly, idx) => (
+                    {event === "flood" && valenciaFloodedPolygons && valenciaFloodedPolygons.map((poly, idx) => (
                         <Polygon
-                            key={idx}
-                            positions={poly}
-                            pathOptions={{color: 'blue', fillOpacity: 0.3}}
-                        />
+                            key={poly.name}
+                            positions={poly.coords}
+                            pathOptions={{ color: "red", fillOpacity: 0.4 }}
+                        >
+                            <Popup>{poly.name}</Popup>
+                        </Polygon>
+                    ))}
+
+                    {event === "potentialFlooding" && valenciaPotentialFloodPolygons && valenciaPotentialFloodPolygons.map((poly, idx) => (
+                        <Polygon
+                            key={poly.name}
+                            positions={poly.coords}
+                            pathOptions={{ color: "orange", fillOpacity: 0.4 }}
+                        >
+                            <Popup>{poly.name}</Popup>
+                        </Polygon>
                     ))}
 
                     {userLocation && (
