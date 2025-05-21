@@ -53,7 +53,7 @@ export function NavBar() {
 
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-                  <Link href="/">
+                  <Link href="/map">
                     Crisis Map
                   </Link>
                 </NavigationMenuLink>

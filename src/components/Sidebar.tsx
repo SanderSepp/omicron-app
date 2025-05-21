@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
 
     return (
-        <div className="flex flex-col h-125 bg-white rounded-lg shadow-md">
+        <div className="flex flex-col h-120 bg-white rounded-lg shadow-md">
             <div className="p-4">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold">Map Points</h2>
