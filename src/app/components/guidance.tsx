@@ -76,13 +76,14 @@ export default function Guidance({ guidanceType }: Props) {
             >
               <CardHeader className={`flex justify-center items-center pb-2 ${textClass}`}>
                 <span className="mr-2">{icon}</span>
-                <CardTitle className="text-2xl font-semibold">{entry.title}</CardTitle>
+                <CardTitle className="text-md font-semibold">Current situation: {entry.title}</CardTitle>
               </CardHeader>
               <CardContent className="leading-relaxed space-y-2">
+                <h2 className="flex items-center font-semibold">What to do: </h2>
                 {entry.guides.map((guide, idx) => (
                   <div key={idx} className="flex items-center space-x-2 font-semibold">
-                    <span className="text-lg text-gray-800">•</span>
-                    <p className="text-lg text-gray-800">{guide}</p>
+                    <span className="text-sm text-gray-800">•</span>
+                    <p className="text-sm text-gray-800">{guide}</p>
                   </div>
                 ))}
               </CardContent>

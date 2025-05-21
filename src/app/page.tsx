@@ -222,7 +222,7 @@ export default function MapPage() {
 
   return (
     <div className="bg-gray-100">
-      <div className="flex h-[900px] p-4 gap-4">
+      <div className="flex h-[800px] p-4 gap-4">
         <div className="flex flex-col gap-2 basis-1/3">
           <div className="">
             <Guidance guidanceType={event} />
