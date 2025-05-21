@@ -3,16 +3,20 @@
 
 "use client";
 
+import dynamic from 'next/dynamic';
 import {MapPoint} from "@/lib/types";
 import {useEffect, useState} from "react";
 import Sidebar from "@/components/Sidebar";
-import CrisisMap from "@/app/components/CrisisMap";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
 import {useAppState} from "@/app/AppContext";
 import ProfileGuidance from "@/app/components/profile-guidance";
 import {useValenciaResourceMapPoints} from "@/hooks/useValenciaResourcePointsDuringFlooding";
+
+const CrisisMap = dynamic(() => import("@/app/components/CrisisMap"), {
+  ssr: false,
+});
 
 const mockuserloclat = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LAT;
 const mockuserloclon = process.env.NEXT_PUBLIC_MOCK_USER_LOC_LON;
