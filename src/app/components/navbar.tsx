@@ -42,6 +42,10 @@ function setEventToLocalStorage(event: z.infer<typeof AlertType>) {
   localStorage.setItem('event', event)
 }
 
+function isMapPage(): boolean {
+  return window.location.pathname.includes('/map');
+}
+
 export function NavBar() {
   const { setEvent } = useAppState();
 
@@ -61,7 +65,7 @@ export function NavBar() {
               <NavigationMenuItem>
                 <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                   <Link href="/map">
-                    Crisis Map
+                    Map
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -93,29 +97,29 @@ export function NavBar() {
           </NavigationMenu>
           <div className="space-x-2">
             <Button
-              onClick={() => {
-                setEventToLocalStorage("calm")
-                setEvent("calm")
-              }}
+                onClick={() => {
+                  setEventToLocalStorage("calm")
+                  setEvent("calm")
+                }}
             >
               EVENT: CALM
             </Button>
 
             <Button
-              onClick={() => {
-                showNotification('⚠️ Weather Alert', 'Heavy rainfall in mountains - potential flooding in your area in next 24h!', "http://localhost:3000/");
-                setEventToLocalStorage("potentialFlooding")
-                setEvent("potentialFlooding")
-              }}
+                onClick={() => {
+                  showNotification('⚠️ Weather Alert', 'Heavy rainfall in mountains - potential flooding in your area in next 24h!', "http://localhost:3000/");
+                  setEventToLocalStorage("potentialFlooding")
+                  setEvent("potentialFlooding")
+                }}
             >
               EVENT: POTENTIAL FLOODING
             </Button>
             <Button
-              onClick={() => {
-                showNotification('ℹ️ FLOOD', 'Heavy flooding in your area', "http://localhost:3000/");
-                setEventToLocalStorage("flood")
-                setEvent("flood")
-              }}
+                onClick={() => {
+                  showNotification('ℹ️ FLOOD', 'Heavy flooding in your area', "http://localhost:3000/");
+                  setEventToLocalStorage("flood")
+                  setEvent("flood")
+                }}
             >
               EVENT: FLOODING
             </Button>

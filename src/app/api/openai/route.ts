@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
       type: "potentialFlooding",
       title: "It's raining cats and dogs",
       guides: [
-        "Crab your emergency kit",
+        "Grab your emergency kit",
         "Move to higher ground immediately",
         "Pick wheelchair accessible routes",
         "Avoid floodwaters",

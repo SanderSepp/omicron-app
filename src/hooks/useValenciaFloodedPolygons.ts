@@ -51,7 +51,8 @@ export function useValenciaFloodedPolygons(): CsvPolygon[] | null {
                     }
 
                     const wkt = match[1];
-                    const name = match[2];
+                    let name = match[2];
+                    name = name.endsWith(",") ? name.slice(0, -1) : name
 
                     try {
                         // Parse WKT polygon string to coordinates
