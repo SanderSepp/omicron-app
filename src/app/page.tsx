@@ -88,6 +88,7 @@ export default function MapPage() {
 
   const fetchResources = async () => {
     setLoading(true);
+    setSelectedPoint(null)
 
     let filterOptions = '';
     if (showWater) filterOptions += '&water=true';

@@ -1,12 +1,11 @@
 // app/profile/page.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import React, {useEffect, useState} from "react";
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Separator} from "@/components/ui/separator";
+import {Badge} from "@/components/ui/badge";
 
 type EmergencyContact = {
   name: string;
@@ -28,13 +27,13 @@ export type UserProfile = {
 // Eight demo profiles
 const defaultProfiles: UserProfile[] = [
   {
-    name: "Default",
+    name: "Timo",
     age: 34,
     dependents: 2,
     hasChildren: true,
     medications: ["Ibuprofen", "Metformin"],
     allergies: ["Peanuts", "Penicillin"],
-    emergencyContact: { name: "John Doe", relation: "Husband", phone: "+123456789" },
+    emergencyContact: { name: "Jane Doe", relation: "Wife", phone: "+123456789" },
     conditions: ["Hypertension", "Asthma"],
   },
   {
@@ -140,21 +139,21 @@ export default function ProfilePage() {
 
   return (
     <main className="p-4 space-y-6">
-      {/* Profile selector */}
-      <div className="flex flex-wrap gap-2 justify-center">
-        {defaultProfiles.map((prof, i) => (
-          <Button
-            key={prof.name}
-            variant={i === selectedIndex ? "default" : "outline"}
-            onClick={() => {
-              setSelectedIndex(i);
-              setSelectedProfile(defaultProfiles[i]);
-            }}
-          >
-            {prof.name}
-          </Button>
-        ))}
-      </div>
+      {/*/!* Profile selector *!/*/}
+      {/*<div className="flex flex-wrap gap-2 justify-center">*/}
+      {/*  {defaultProfiles.map((prof, i) => (*/}
+      {/*    <Button*/}
+      {/*      key={prof.name}*/}
+      {/*      variant={i === selectedIndex ? "default" : "outline"}*/}
+      {/*      onClick={() => {*/}
+      {/*        setSelectedIndex(i);*/}
+      {/*        setSelectedProfile(defaultProfiles[i]);*/}
+      {/*      }}*/}
+      {/*    >*/}
+      {/*      {prof.name}*/}
+      {/*    </Button>*/}
+      {/*  ))}*/}
+      {/*</div>*/}
 
       {/* Profile display */}
       <Card className="max-w-2xl mx-auto">
