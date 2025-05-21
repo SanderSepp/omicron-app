@@ -78,7 +78,7 @@ export default function Guidance({ guidanceType }: Props) {
                 <span className="mr-2">{icon}</span>
                 <CardTitle className="text-2xl font-semibold">{entry.title}</CardTitle>
               </CardHeader>
-              <CardContent className="leading-relaxed">
+              <CardContent className="leading-relaxed space-y-2">
                 {entry.guides.map((guide, idx) => (
                   <div key={idx} className="flex items-center space-x-2 font-semibold">
                     <span className="text-lg text-gray-800">•</span>

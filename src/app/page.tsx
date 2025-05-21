@@ -4,16 +4,14 @@
 "use client";
 
 import dynamic from 'next/dynamic';
-import {MapPoint} from "@/lib/types";
-import {useEffect, useState} from "react";
+import { MapPoint } from "@/lib/types";
+import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import PointCard from "@/app/components/PointCard";
 import PointForm from "./components/PointForm";
 import Guidance from "@/app/components/guidance";
-import {useAppState} from "@/app/AppContext";
-import ProfileGuidance from "@/app/components/profile-guidance";
-import {useValenciaResourceMapPoints} from "@/hooks/useValenciaResourcePointsDuringFlooding";
-import { cn } from "@/lib/utils"
+import { useAppState } from "@/app/AppContext";
+import { useValenciaResourceMapPoints } from "@/hooks/useValenciaResourcePointsDuringFlooding";
 
 const CrisisMap = dynamic(() => import("@/app/components/CrisisMap"), {
   ssr: false,
@@ -223,23 +221,14 @@ export default function MapPage() {
   }
 
   return (
-    <div className="">
-      <div className="flex bg-gray-100 h-[600px]">
-        <div className="p-4 flex flex-col gap-1">
-          <div className={cn("flex flex-col bg-white rounded-lg shadow-md border", {
-            "border-red-600 bg-red-100": event === 'flood',
-            "border-amber-600 bg-amber-100": event === 'potentialFlooding',
-            "border-green-600 bg-green-100": event === 'calm'
-          })}>
-            <div className="p-4">
-              <h2 className={cn("text-xl font-bold", {
-                "text-red-600": event === 'flood',
-                "text-amber-600": event === 'potentialFlooding',
-                "text-green-600": event === 'calm'
-              })}>Current weather: {currentWeather}</h2>
-            </div>
+    <div className="bg-gray-100">
+      <div className="flex h-[900px] p-4 gap-4">
+        <div className="flex flex-col gap-2 basis-1/3">
+          <div className="">
+            <Guidance guidanceType={event} />
           </div>
-          <Sidebar points={points}
+          <Sidebar
+            points={points}
             selectedPoint={selectedPoint}
             onSelectPoint={handleSelectPoint}
             userLocation={userLocation}
@@ -256,7 +245,7 @@ export default function MapPage() {
           />
         </div>
 
-        <div className="p-4 grow shrink-0">
+        <div className="grow shrink-0">
           <div className="relative h-full rounded-lg overflow-hidden">
             <CrisisMap
               event={event}
@@ -288,15 +277,6 @@ export default function MapPage() {
           </div>
         </div>
 
-      </div>
-
-      <div className="p-4">
-        <Guidance guidanceType={event} />
-        <div className="grid grid-cols-2 gap-2 ">
-          <div>
-            <ProfileGuidance profile={profile} />
-          </div>
-        </div>
       </div>
     </div>
   );
